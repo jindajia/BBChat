@@ -3,8 +3,8 @@
     <!-- Navigation -->
     <nav class="navbar shadow bg-white rounded justify-content-between flex-nowrap flex-row fixed-top">
       <div class="container">
-        <a class="navbar-brand float-left" href="https://www.positronx.io" target="_blank">
-           positronX.io
+        <a class="navbar-brand float-left"  target="_blank">
+           BBChat
         </a>
         <ul class="nav navbar-nav flex-row float-right">
           <li class="nav-item">
