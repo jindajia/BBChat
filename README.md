@@ -3,7 +3,7 @@
 ## Contributor
 ### Frontend
 - Yuxuan Zhang
-- Jinda
+- Jinda Jia
 
 ### Backend
 - Kexin Zhang
