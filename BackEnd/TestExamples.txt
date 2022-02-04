@@ -1,12 +1,10 @@
 PostMan Test Examples:
 for Register an account:
-
+http://localhost:8000/users/signup
 {
-    "first_name": "cauchy",
-    "last_name": "zhang",
-    "email":  "x1881767@gmal.com",
-    "Password": "kkkkkxna784984",
-    "phone": "1881778892",
+    "user_name": "zascauchy",
+    "email":  "x1as881767@gmail.com",
+    "Password": "kkkna784984",
     "user_type": "USER"
 }
 
