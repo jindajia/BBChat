@@ -1,0 +1,18 @@
+PostMan Test Examples:
+for Register an account:
+
+{
+    "first_name": "cauchy",
+    "last_name": "zhang",
+    "email":  "x1881767@gmal.com",
+    "Password": "kkkkkxna784984",
+    "phone": "1881778892",
+    "user_type": "USER"
+}
+
+http://localhost:8000/users/signroom
+{
+   "roomno": "4587",
+    "email": "x1817@gmail.com",
+    "user_type": "USER"
+}
