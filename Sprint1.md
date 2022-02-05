@@ -1,5 +1,9 @@
 # Sprint1
 
+## Video
+BBChat/Sprint1-BackEnd.mp4
+BBChat/Sprint1-FrontEnd.mov
+
 ## Front-End
 ### Accomplished:
 - Completed the construction of the Vue framework
