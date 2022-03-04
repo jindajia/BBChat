@@ -68,7 +68,7 @@ function Registration(props) {
         <span className="error-message">{registrationErrorMessage? registrationErrorMessage : ''}</span>
       </div>
       <div className="app__form-row">
-        <button onClick={registerUser}>Registration</button>
+        <button onClick={registerUser}>RegistrationConfirm</button>
       </div>
     </div>
   );
