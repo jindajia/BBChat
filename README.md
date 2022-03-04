@@ -2,10 +2,10 @@
 
 ## Contributor
 ### Frontend
-- Yuxuan Zhang
-- Jinda Jia
+- Yuxuan Zhang  -- GithubID: superoctober1213
+- Jinda Jia  -- GithubID: jindajia
 
 ### Backend
-- Kexin Zhang
-- Junge Xu
+- Kexin Zhang  -- GithubID: Cauchyxxx
+- Junge Xu  -- GithubID: Junge24
 
