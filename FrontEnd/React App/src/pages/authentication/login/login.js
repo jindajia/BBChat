@@ -48,7 +48,7 @@ function Login(props) {
         <span className="error-message">{loginErrorMessage? loginErrorMessage : ''}</span>
       </div>
       <div className="app__form-row">
-        <button onClick={loginUser}>Login</button>
+        <button onClick={loginUser}>LoginConfirm</button>
       </div>
     </div>
   );
