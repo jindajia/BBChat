@@ -14,7 +14,7 @@ Response:
 }
 
 test case with registered username:
-http://localhost:8000/isUsernameAvailable/"zascauchy"
+http://localhost:8000/isUsernameAvailable/zascauchy
 Response:
 {
     "code": 200,
@@ -28,6 +28,7 @@ Response:
 
 1. for Register an account:
 Case:
+POST 
 http://localhost:8000/registration
 {
     "Username": "zascauchy",
@@ -62,7 +63,7 @@ response:
 Normal Case =>
 {
     "Username": "zascauchy",
-    "Password": "kkkna784984",
+    "Password": "kkkna784984"
 }
 
 Response:
