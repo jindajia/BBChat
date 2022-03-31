@@ -106,6 +106,29 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
 
 		}
+
+	case "group"// or use room message?? which one is better for recognize?
+	    message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
+        fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+        roomID := (socketEventPayload.EventPayload.(map[string]interface{})["roomID"]).(string)
+        // recheck socketEventPayload
+        		if message != "" && fromUserID != "" && roomID != "" {
+
+        			messagePacket := MessagePayloadStruct{
+        				FromUserID: fromUserID,
+        				Message:    message,
+        				RoomID:   roomID,
+        			}
+        			StoreNewGroupMessages(messagePacket)
+        			// need to send notifications to all members in the group?
+        			// like the twitter?? rewrite allOnlineUsersPayload-> ?
+//         			allOnlineUsersPayload := SocketEventStruct{
+//         				EventName:    "message-response",
+//         				EventPayload: messagePacket,
+//         			}
+        			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
+
+        		}
 	}
 }
 
@@ -265,3 +288,18 @@ func BroadcastSocketEventToAllClientExceptMe(hub *Hub, payload SocketEventStruct
 		}
 	}
 }
+/// HandleNewRoomEvent
+func HandleUserRegisterEvent(hub *Hub, client *Client) {
+// 	hub.clients[client] = true
+// 	handleSocketPayloadEvents(client, SocketEventStruct{
+// 		EventName:    "join",
+// 		EventPayload: client.userID,
+// 	})
+}
+
+//Todo :maybe we also need the following event :
+//room invitation event: invite a user into an existed room-> a member of a room send an invitation to a user for join the chatting room
+//accept invitation event: accept the invitation for joining in a room => may there should be pop up window? or a message like invitation
+// room disband event:
+// member remove event:
+// transfer administration role event??
