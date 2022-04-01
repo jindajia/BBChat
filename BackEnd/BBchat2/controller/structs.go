@@ -19,6 +19,12 @@ type ConversationStruct struct {
 	FromUserID string `json:"fromUserID"`
 }
 
+type BroadcastStruct struct {
+	ID         string `json:"id" bson:"_id,omitempty"`
+	Message    string `json:"message"`
+	FromUserID string `json:"fromUserID"`
+}
+
 // UserDetailsRequestPayloadStruct represents payload for Login and Registration request
 type UserDetailsRequestPayloadStruct struct {
 	Username string
@@ -48,6 +54,13 @@ type Client struct {
 
 // MessagePayloadStruct is a struct used for message Payload
 type MessagePayloadStruct struct {
+	FromUserID string `json:"fromUserID"`
+	ToUserID   string `json:"toUserID"`
+	Message    string `json:"message"`
+}
+
+// DriftBottlePayloadStruct is a struct used for drift bottle message Payload
+type DriftBottlePayloadStruct struct {
 	FromUserID string `json:"fromUserID"`
 	ToUserID   string `json:"toUserID"`
 	Message    string `json:"message"`

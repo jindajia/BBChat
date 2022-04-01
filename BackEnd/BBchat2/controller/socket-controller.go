@@ -85,6 +85,28 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 				},
 			})
 		}
+
+	case "driftBottle":
+        	message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
+            fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+            toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
+
+        		if message != "" && fromUserID != "" && toUserID != "" {
+
+        			driftBottlePacket := DriftBottlePayloadStruct{
+        				FromUserID: fromUserID,
+        				Message:    message,
+        				ToUserID:   toUserID,
+        			}
+        			StoreNewDriftBottles(driftBottlePacket)
+        			allOnlineUsersPayload := SocketEventStruct{
+        				EventName:    "driftbottle-response",
+        				EventPayload: driftBottlePacket,
+        			}
+        			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
+
+        		}
+
     case "image":
     		image := (socketEventPayload.EventPayload.(map[string]interface{})["image"]).(string)
     		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
@@ -99,7 +121,7 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
     			}
     			StoreNewChatImages(imagePacket)
     			allOnlineUsersPayload := SocketEventStruct{
-    				EventName:    "message-response",
+    				EventName:    "image-response",
     				EventPayload: imagePacket,
     			}
     			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
@@ -125,7 +147,27 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
 
 		}
+    case "broadcast":
+    		message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
+    		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
 
+
+    		if message != "" && fromUserID != "" {
+
+
+    			messagePacket := MessagePayloadStruct{
+    				FromUserID: fromUserID,
+    				Message:    message,
+
+    			}
+    			StoreNewBroadcastMessages(messagePacket)
+    			allOnlineUsersPayload := SocketEventStruct{
+    				EventName:    "message-response",
+    				EventPayload: messagePacket,
+    			}
+    			BroadcastSocketEventToAllClient(client.hub, allOnlineUsersPayload)
+
+    		}
 	case "group"// or use room message?? which one is better for recognize?
 	    message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
         fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
