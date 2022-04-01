@@ -243,6 +243,23 @@ func StoreNewChatMessages(messagePayload MessagePayloadStruct) bool {
 	return true
 }
 
+func StoreNewChatImages(imagePayload ImagePayloadStruct) bool {
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("messages")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	_, registrationError := collection.InsertOne(ctx, bson.M{
+		"fromUserID": imagePayload.FromUserID,
+		"image":    imagePayload.Image,
+		"toUserID":   imagePayload.ToUserID,
+	})
+	defer cancel()
+
+	if registrationError == nil {
+		return false
+	}
+	return true
+}
+
 // StoreNewGroupMessages is used for storing a new message of a chatting room
 func StoreNewGroupMessages(messagePayload MessagePayloadStruct) bool {
 	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("rooms")
@@ -311,6 +328,7 @@ func GetConversationBetweenTwoUsers(toUserID string, fromUserID string) []Conver
 				FromUserID: conversation.FromUserID,
 				ToUserID:   conversation.ToUserID,
 				Message:    conversation.Message,
+				Image:      conversation.Image
 			})
 		}
 	}

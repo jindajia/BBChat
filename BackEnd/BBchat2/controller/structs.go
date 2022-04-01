@@ -52,6 +52,14 @@ type MessagePayloadStruct struct {
 	ToUserID   string `json:"toUserID"`
 	Message    string `json:"message"`
 }
+// ImagePayloadStruct is a struct used for image Payload
+// Image size should be smaller than 4M, it is actually similar with message.
+// But we need to distinguish it from message. So that the front could know which kind of data need to be transfered into image formation
+type ImagePayloadStruct struct {
+	FromUserID string `json:"fromUserID"`
+	ToUserID   string `json:"toUserID"`
+	Image    string `json:"image"`
+}
 
 type User struct {
 	ID            primitive.ObjectID `bson:"_id"`
