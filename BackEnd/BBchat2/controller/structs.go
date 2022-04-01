@@ -1,6 +1,9 @@
 package handlers
 
-import "github.com/gorilla/websocket"
+import (
+	"github.com/gorilla/websocket"
+	"time"
+)
 
 // UserDetailsStruct is a universal struct for mapping the user details
 type UserDetailsStruct struct {
@@ -51,4 +54,32 @@ type MessagePayloadStruct struct {
 	FromUserID string `json:"fromUserID"`
 	ToUserID   string `json:"toUserID"`
 	Message    string `json:"message"`
+}
+
+type CreateRoomDetailResponsePayloadStruct struct {
+	Username             string `json:"username"`
+	UserID               string `json:"userID"`
+	RoomNo               string `json:"roomNo"`
+	RoomID               string `json:"roomID"`
+	GenerateRoomPassword string `json:"generateRoomPassword"`
+	RoomPassword         string `json:"roomPassword"`
+}
+
+type JoinRoomDetailResponsePayloadStruct struct {
+	Username     string `json:"username"`
+	RoomNo       string `json:"roomNo"`
+	RoomPassword string `json:"roomPassword"`
+}
+type RoomInforStruct struct {
+	RoomNo       string `json:"roomNo"`
+	RoomID       string `json:"roomID"`
+	RoomPassword string `json:"roomPassword"`
+}
+type RoomDBstruct struct {
+	RoomNo       string    `json:"roomNo"`
+	RoomID       string    `json:"roomID"`
+	Username     string    `json:"username"`
+	RoomPassword string    `json:"roomPassword"`
+	CreateTime   time.Time `json:"create_time"`
+	RoomMember   string    `json:"room_member"`
 }

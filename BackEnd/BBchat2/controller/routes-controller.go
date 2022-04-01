@@ -247,3 +247,138 @@ func GetMessagesHandler(responseWriter http.ResponseWriter, request *http.Reques
 		ReturnResponse(responseWriter, request, response)
 	}
 }
+
+func CreatRoom(responseWriter http.ResponseWriter, request *http.Request) {
+	var CreateRoomDetailResponsePayload CreateRoomDetailResponsePayloadStruct
+	decoder := json.NewDecoder(request.Body)
+	requestDecoderError := decoder.Decode(&CreateRoomDetailResponsePayload)
+	defer request.Body.Close()
+
+	if requestDecoderError != nil {
+		response := APIResponseStruct{
+			Code:     http.StatusBadRequest,
+			Status:   http.StatusText(http.StatusBadRequest),
+			Message:  "Request failed to complete, we are working on it",
+			Response: nil,
+		}
+		ReturnResponse(responseWriter, request, response)
+	} else {
+		if CreateRoomDetailResponsePayload.RoomNo == "" {
+			response := APIResponseStruct{
+				Code:     http.StatusBadRequest,
+				Status:   http.StatusText(http.StatusBadRequest),
+				Message:  "RoomNo can't be empty.",
+				Response: nil,
+			}
+			ReturnResponse(responseWriter, request, response)
+		}
+		if CreateRoomDetailResponsePayload.GenerateRoomPassword == "" {
+			response := APIResponseStruct{
+				Code:     http.StatusBadRequest,
+				Status:   http.StatusText(http.StatusBadRequest),
+				Message:  "You need to decide whether generate password or not.",
+				Response: nil,
+			}
+			ReturnResponse(responseWriter, request, response)
+		}
+		if CreateRoomDetailResponsePayload.GenerateRoomPassword == "No" && CreateRoomDetailResponsePayload.RoomPassword == "" {
+			response := APIResponseStruct{
+				Code:     http.StatusBadRequest,
+				Status:   http.StatusText(http.StatusBadRequest),
+				Message:  "Password cannot be empty.",
+				Response: nil,
+			}
+			ReturnResponse(responseWriter, request, response)
+		} else {
+			roomres, roomerror := RoomNoavailableQueryHandle(CreateRoomDetailResponsePayload)
+			if roomerror != nil {
+				response := APIResponseStruct{
+					Code:     http.StatusBadRequest,
+					Status:   http.StatusText(http.StatusBadRequest),
+					Message:  "",
+					Response: roomerror,
+				}
+				ReturnResponse(responseWriter, request, response)
+			} else if roomres == "Yes" {
+				roomcreateerror, RoomInfor := CreateRoomQueryHandler(CreateRoomDetailResponsePayload)
+				if roomcreateerror != nil {
+					response := APIResponseStruct{
+						Code:     http.StatusBadRequest,
+						Status:   http.StatusText(http.StatusBadRequest),
+						Message:  "",
+						Response: roomcreateerror,
+					}
+					ReturnResponse(responseWriter, request, response)
+				} else {
+					response := APIResponseStruct{
+						Code:     http.StatusBadRequest,
+						Status:   http.StatusText(http.StatusBadRequest),
+						Message:  "You have created a chat room",
+						Response: RoomInfor,
+					}
+					ReturnResponse(responseWriter, request, response)
+				}
+			}
+		}
+
+	}
+
+}
+
+func JoinRoom(responseWriter http.ResponseWriter, request *http.Request) {
+	var JoinRoomDetailResponsePayload JoinRoomDetailResponsePayloadStruct
+	decoder := json.NewDecoder(request.Body)
+	requestDecoderError := decoder.Decode(&JoinRoomDetailResponsePayload)
+	defer request.Body.Close()
+
+	if requestDecoderError != nil {
+		response := APIResponseStruct{
+			Code:     http.StatusBadRequest,
+			Status:   http.StatusText(http.StatusBadRequest),
+			Message:  "Request failed to complete, we are working on it",
+			Response: nil,
+		}
+		ReturnResponse(responseWriter, request, response)
+	} else {
+		if JoinRoomDetailResponsePayload.RoomNo == "" {
+			response := APIResponseStruct{
+				Code:     http.StatusBadRequest,
+				Status:   http.StatusText(http.StatusBadRequest),
+				Message:  "RoomNo can't be empty.",
+				Response: nil,
+			}
+			ReturnResponse(responseWriter, request, response)
+		}
+	}
+	if JoinRoomDetailResponsePayload.RoomPassword == "" {
+		response := APIResponseStruct{
+			Code:     http.StatusBadRequest,
+			Status:   http.StatusText(http.StatusBadRequest),
+			Message:  "Room Password can't be empty.",
+			Response: nil,
+		}
+		ReturnResponse(responseWriter, request, response)
+
+	} else {
+		joinres, err := JoinRoomQueryHandler(JoinRoomDetailResponsePayload)
+		if err != nil {
+			response := APIResponseStruct{
+				Code:     http.StatusBadRequest,
+				Status:   http.StatusText(http.StatusBadRequest),
+				Message:  JoinRoomDetailResponsePayload.Username + "cannot join the group chat room",
+				Response: err,
+			}
+			ReturnResponse(responseWriter, request, response)
+		} else {
+			response := APIResponseStruct{
+				Code:     http.StatusBadRequest,
+				Status:   http.StatusText(http.StatusBadRequest),
+				Message:  "user joint the group chat",
+				Response: joinres,
+			}
+			ReturnResponse(responseWriter, request, response)
+
+		}
+
+	}
+}
