@@ -47,6 +47,7 @@ func ReturnResponse(response http.ResponseWriter, request *http.Request, apiResp
 	jsonResponse, err := json.Marshal(httpResponse)
 	if err != nil {
 		panic(err)
+		return
 	}
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(httpResponse.Code)
