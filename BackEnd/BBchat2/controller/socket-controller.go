@@ -85,7 +85,26 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 				},
 			})
 		}
+    case "image":
+    		image := (socketEventPayload.EventPayload.(map[string]interface{})["image"]).(string)
+    		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+    		toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
 
+    		if image != "" && fromUserID != "" && toUserID != "" {
+
+    			imagePacket := ImagePayloadStruct{
+    				FromUserID: fromUserID,
+    				Image:    image,
+    				ToUserID:   toUserID,
+    			}
+    			StoreNewChatImages(imagePacket)
+    			allOnlineUsersPayload := SocketEventStruct{
+    				EventName:    "message-response",
+    				EventPayload: imagePacket,
+    			}
+    			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
+
+    		}
 	case "message":
 		message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
 		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
