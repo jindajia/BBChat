@@ -118,7 +118,8 @@ func RegisterQueryHandler(userDetailsRequestPayload UserDetailsRequestPayloadStr
 		if newPasswordHashError != nil {
 			return "", errors.New("Request failed to complete, we are working on it")
 		}
-		collection := db.MongoDBClient.Database("BBchattest").Collection("users")
+
+		collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("users")
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 		registrationQueryResponse, registrationError := collection.InsertOne(ctx, bson.M{
@@ -155,11 +156,11 @@ func GetAllOnlineUsers(userID string) []UserDetailsResponsePayloadStruct {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	cursor, queryError := collection.Find(ctx, bson.M{
-		"online": "Y",
-		"_id": bson.M{
-			"$ne": docID,
-		},
-	})
+        "online": "Y",
+        "_id":bson.M{
+            "$ne": docID,
+        },
+    })
 	defer cancel()
 
 	if queryError != nil {
@@ -181,47 +182,6 @@ func GetAllOnlineUsers(userID string) []UserDetailsResponsePayloadStruct {
 	}
 
 	return onlineUsers
-}
-// TODO we may need a function to query the contacts list of the current users:
-func GetContacts(userID string) []UserDetailsResponsePayloadStruct {
-	var onContacts []UserDetailsResponsePayloadStruct
-    // we may or many not need to design a new data struct
-	docID, err := primitive.ObjectIDFromHex(userID)
-	// 上一行啥意思
-	if err != nil {
-		return contacts
-	}
-
-	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("users")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	cursor, queryError := collection.Find(ctx, bson.M{
-		"online": "Y",
-		"_id": bson.M{
-			"$ne": docID,
-		},
-	})
-	defer cancel()
-
-	if queryError != nil {
-		return onlineUsers
-	}
-
-// 	for cursor.Next(context.TODO()) {
-// 		//Create a value into which the single document can be decoded
-// 		var singleOnlineUser UserDetailsStruct
-// 		err := cursor.Decode(&singleOnlineUser)
-//
-// 		if err == nil {
-// 			onlineUsers = append(onlineUsers, UserDetailsResponsePayloadStruct{
-// 				UserID:   singleOnlineUser.ID,
-// 				Online:   singleOnlineUser.Online,
-// 				Username: singleOnlineUser.Username,
-// 			})
-// 		}
-// 	}
-
-	return contacts
 }
 
 
@@ -265,9 +225,9 @@ func StoreNewDriftBottles(driftBottlePayload DriftBottlePayloadStruct) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	_, registrationError := collection.InsertOne(ctx, bson.M{
-		"fromUserID": messagePayload.FromUserID,
-		"message":    messagePayload.Message,
-		"toUserID":   messagePayload.ToUserID,
+		"fromUserID": driftBottlePayload.FromUserID,
+		"message":    driftBottlePayload.Message,
+		"toUserID":   driftBottlePayload.ToUserID,
 	})
 	defer cancel()
 
@@ -295,79 +255,22 @@ func StoreNewChatImages(imagePayload ImagePayloadStruct) bool {
 }
 
 // StoreNewGroupMessages is used for storing a new message of a chatting room
-func StoreNewGroupMessages(messagePayload MessagePayloadStruct) bool {
-	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("rooms")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	_, registrationError := collection.InsertOne(ctx, bson.M{
-		"fromUserID": messagePayload.FromUserID,
-		"message":    messagePayload.Message,
-		"roomID":   messagePayload.roomID,
-	})
-	defer cancel()
-
-	if registrationError == nil {
-		return false
-	}
-	return true
-}
-
-func GetBlindChattingBetweenTwoUsers(toUserID string, fromUserID string) []BlindChattingStruct {
-	var blindChattings []BlindChattingStruct
-
-	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("driftbottles")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	queryCondition := bson.M{
-		"$or": []bson.M{
-			{
-				"$and": []bson.M{
-					{
-						"toUserID": toUserID,
-					},
-					{
-						"fromUserID": fromUserID,
-					},
-				},
-			},
-			{
-				"$and": []bson.M{
-					{
-						"toUserID": fromUserID,
-					},
-					{
-						"fromUserID": toUserID,
-					},
-				},
-			},
-		},
-	}
-
-	cursor, queryError := collection.Find(ctx, queryCondition)
-	defer cancel()
-
-	if queryError != nil {
-		return blindChattings
-	}
-
-	for cursor.Next(context.TODO()) {
-		//Create a value into which the single document can be decoded
-		var blindChatting []BlindChattingStruct
-		err := cursor.Decode(&blindChatting)
-
-		if err == nil {
-			blindChattings = append(blindChattings, BlindChattingStruct{
-				ID:         blindChatting.ID,
-				FromUserID: blindChatting.FromUserID,
-				ToUserID:   blindChatting.ToUserID,
-				Message:    blindChatting.Message,
-				Image:      blindChatting.Image
-			})
-		}
-	}
-	return blindChattings
-}
-
+// func StoreNewGroupMessages(messagePayload MessagePayloadStruct) bool {
+// 	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("rooms")
+// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+//
+// 	_, registrationError := collection.InsertOne(ctx, bson.M{
+// 		"fromUserID": messagePayload.FromUserID,
+// 		"message":    messagePayload.Message,
+// 		"roomID":   messagePayload.roomID,
+// 	})
+// 	defer cancel()
+//
+// 	if registrationError == nil {
+// 		return false
+// 	}
+// 	return true
+// }
 
 // GetConversationBetweenTwoUsers will be used to fetch the conversation between two users
 func GetConversationBetweenTwoUsers(toUserID string, fromUserID string) []ConversationStruct {
@@ -419,11 +322,68 @@ func GetConversationBetweenTwoUsers(toUserID string, fromUserID string) []Conver
 				FromUserID: conversation.FromUserID,
 				ToUserID:   conversation.ToUserID,
 				Message:    conversation.Message,
-				Image:      conversation.Image
+				Image:      conversation.Image,
 			})
 		}
 	}
 	return conversations
+}
+
+func GetBlindChattingBetweenTwoUsers(toUserID string, fromUserID string) []BlindChattingStruct {
+	var blindChattings []BlindChattingStruct
+
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("driftbottles")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	queryCondition := bson.M{
+		"$or": []bson.M{
+			{
+				"$and": []bson.M{
+					{
+						"toUserID": toUserID,
+					},
+					{
+						"fromUserID": fromUserID,
+					},
+				},
+			},
+			{
+				"$and": []bson.M{
+					{
+						"toUserID": fromUserID,
+					},
+					{
+						"fromUserID": toUserID,
+					},
+				},
+			},
+		},
+	}
+
+	cursor, queryError := collection.Find(ctx, queryCondition)
+	defer cancel()
+
+	if queryError != nil {
+		return blindChattings
+	}
+
+	for cursor.Next(context.TODO()) {
+		//Create a value into which the single document can be decoded
+		var blindChatting BlindChattingStruct
+		err := cursor.Decode(&blindChatting)
+
+		if err == nil {
+			blindChattings = append(blindChattings, BlindChattingStruct{
+				ID:         blindChatting.ID,
+				FromUserID: blindChatting.FromUserID,
+				ToUserID:   blindChatting.ToUserID,
+				Message:    blindChatting.Message,
+				Image:      blindChatting.Image,
+			})
+		}
+	}
+	return blindChattings
+
 }
 
 func GetBroadcast()[]BroadcastStruct {
@@ -431,34 +391,7 @@ func GetBroadcast()[]BroadcastStruct {
 
     collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("broadcasts")
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-//     queryCondition := bson.M{
-//         "$or": []bson.M{
-//             {
-//                 "$and": []bson.M{
-//                     {
-//                         "toUserID": toUserID,
-//                     },
-//                     {
-//                         "fromUserID": fromUserID,
-//                     },
-//                 },
-//             },
-//             {
-//                 "$and": []bson.M{
-//                     {
-//                         "toUserID": fromUserID,
-//                     },
-//                     {
-//                         "fromUserID": toUserID,
-//                     },
-//                 },
-//             },
-//         },
-//     }
-
-//     cursor, queryError := collection.Find(ctx, queryCondition)
-    cursor, queryError := collection.Find(ctx)
+    cursor, queryError := collection.Find(ctx,bson.D{{}})
     defer cancel()
 
     if queryError != nil {
@@ -475,74 +408,13 @@ func GetBroadcast()[]BroadcastStruct {
                 ID:         broadcast.ID,
                 FromUserID: broadcast.FromUserID,
                 Message:    broadcast.Message,
-                Image:      broadcast.Image
+                Image:      broadcast.Image,
             })
         }
     }
     return broadcasts
 }
 
-// TODO: Get a group discussion/ a chatting room
-func GetChattingRoom(roomID string, userID string) []ConversationStruct {
-    //userID:ID of the current user.
-    // since there are many members in a chatting room, we need distinguish the message from userID himself/herself from others
-	// If its hard to distinguish,then ignore the upper suggestion
-	var discussion []DiscussionStruct
-    // TODO:need to design the discussion struct to clarify which will be return
-	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("rooms")
-	// we should have a collection named room:
-	// in the room collection, we have different rooms,
-	// we store the chatting history and files uploaded by users under the corresponding rooms
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-// rewrite query
-// 	queryCondition := bson.M{
-// 		"$or": []bson.M{
-// 			{
-// 				"$and": []bson.M{
-// 					{
-// 						"toUserID": toUserID,
-// 					},
-// 					{
-// 						"fromUserID": fromUserID,
-// 					},
-// 				},
-// 			},
-// 			{
-// 				"$and": []bson.M{
-// 					{
-// 						"toUserID": fromUserID,
-// 					},
-// 					{
-// 						"fromUserID": toUserID,
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}
-
-	cursor, queryError := collection.Find(ctx, queryCondition)
-	defer cancel()
-
-	if queryError != nil {
-		return discussion
-	}
-
-	for cursor.Next(context.TODO()) {
-		//Create a value into which the single document can be decoded
-		var discussion DiscussionStruct
-		err := cursor.Decode(&discussion)
-
-		if err == nil {
-			discussion = append(discussion, DiscussionStruct{
-				ID:         discussion.ID,
-				FromUserID: discussion.FromUserID,
-				Message:    discussion.Message,
-			})
-		}
-	}
-	return discussion
-}
 
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
