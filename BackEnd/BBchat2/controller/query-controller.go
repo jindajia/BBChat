@@ -118,8 +118,7 @@ func RegisterQueryHandler(userDetailsRequestPayload UserDetailsRequestPayloadStr
 		if newPasswordHashError != nil {
 			return "", errors.New("Request failed to complete, we are working on it")
 		}
-
-		collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("users")
+		collection := db.MongoDBClient.Database("BBChatTest").Collection("users")
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 		registrationQueryResponse, registrationError := collection.InsertOne(ctx, bson.M{
@@ -332,7 +331,7 @@ func GetConversationBetweenTwoUsers(toUserID string, fromUserID string) []Conver
 func GetBlindChattingBetweenTwoUsers(toUserID string, fromUserID string) []BlindChattingStruct {
 	var blindChattings []BlindChattingStruct
 
-	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("driftbottles")
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("driftBottles")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	queryCondition := bson.M{
