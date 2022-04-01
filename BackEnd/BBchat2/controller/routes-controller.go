@@ -215,65 +215,6 @@ func UserSessionCheck(responseWriter http.ResponseWriter, request *http.Request)
 		}
 	}
 }
-// establish a new group chatting room
-func newRoom(responseWriter http.ResponseWriter, request *http.Request) {
-	var roomDetailsRequestPayload RoomDetailsRequestPayloadStruct
-    //RoomDetailsRequestPayloadStruct need to be implemented
-	decoder := json.NewDecoder(request.Body)
-	requestDecoderError := decoder.Decode(&roomDetailsRequestPayload)
-	defer request.Body.Close()
-
-	if requestDecoderError != nil {
-		response := APIResponseStruct{
-			Code:     http.StatusBadRequest,
-			Status:   http.StatusText(http.StatusBadRequest),
-			Message:  "Request failed to complete, we are working on it",
-			Response: nil,
-		}
-		ReturnResponse(responseWriter, request, response)
-	} else {
-		if roomDetailsRequestPayload.Roomname == "" {
-			response := APIResponseStruct{
-				Code:     http.StatusBadRequest,
-				Status:   http.StatusText(http.StatusBadRequest),
-				Message:  "Roomname can't be empty.",
-				Response: nil,
-			}
-			ReturnResponse(responseWriter, request, response)
-		} else if roomDetailsRequestPayload.members == "" {
-		    // need to be decided how to check if there are at least 3 members
-			response := APIResponseStruct{
-				Code:     http.StatusInternalServerError,
-				Status:   http.StatusText(http.StatusInternalServerError),
-				Message:  "need to invite at least 2 other friends.",
-				Response: nil,
-			}
-			ReturnResponse(responseWriter, request, response)
-		} else {
-			roomObjectID, newRoomError := RegisterQueryHandler(userDetailsRequestPayload)
-			if newRoomError != nil {
-				response := APIResponseStruct{
-					Code:     http.StatusInternalServerError,
-					Status:   http.StatusText(http.StatusInternalServerError),
-					Message:  "Request failed to complete, we are working on it",
-					Response: nil,
-				}
-				ReturnResponse(responseWriter, request, response)
-			} else {
-				response := APIResponseStruct{
-					Code:    http.StatusOK,
-					Status:  http.StatusText(http.StatusOK),
-					Message: "Room Establishment Completed.",
-					Response: UserDetailsResponsePayloadStruct{
-						Roomname: roomDetailsRequestPayload.Roomname,
-						RoomID:   roomObjectID,
-					},
-				}
-				ReturnResponse(responseWriter, request, response)
-			}
-		}
-	}
-}
 
 //GetMessagesHandler function will fetch the messages between two users
 func GetDriftBottlesHandler(responseWriter http.ResponseWriter, request *http.Request) {
@@ -290,7 +231,7 @@ func GetDriftBottlesHandler(responseWriter http.ResponseWriter, request *http.Re
 		}
 		ReturnResponse(responseWriter, request, response)
 	} else {
-		bottles := GetDriftBottlesBetweenTwoUsers(toUserID, fromUserID)
+		bottles := GetBlindChattingBetweenTwoUsers(toUserID, fromUserID)
 		response := APIResponseStruct{
 			Code:     http.StatusOK,
 			Status:   http.StatusText(http.StatusOK),
