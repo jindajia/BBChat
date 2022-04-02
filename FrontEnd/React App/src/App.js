@@ -19,6 +19,7 @@ function App() {
         <Switch>
           <Route path="/" exact component={Authentication} />
           <Route path="/home/" component={Home} />
+          <Route path="/groupchat/" component={Groupchat} />
           <Route component={FourOFour} />
         </Switch>
       </Router>
