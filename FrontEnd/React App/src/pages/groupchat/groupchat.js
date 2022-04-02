@@ -12,8 +12,8 @@ import {
   removeItemInLS
 } from "./../../services/storage-service";
 
-import ChatList from './chat-list/chat-list';
-import Conversation from './conversation/conversation';
+import ChatList from '../home/chat-list/chat-list';
+import Conversation from '../home/conversation/conversation';
 
 import './groupchat.css';
 

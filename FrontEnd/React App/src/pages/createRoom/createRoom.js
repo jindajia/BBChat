@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
+import { withRouter } from 'react-router-dom';
 
 import './createRoom.css'
 
@@ -86,3 +87,4 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
+export default withRouter(CreateRoom);
