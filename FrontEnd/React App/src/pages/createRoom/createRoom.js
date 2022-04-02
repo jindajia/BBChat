@@ -80,11 +80,4 @@ function CreateRoom(props) {
 
 // }
 
-
-
-ReactDOM.render(
-  <CreateRoom />,
-  document.getElementById('root')
-);
-
 export default withRouter(CreateRoom);
