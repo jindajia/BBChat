@@ -1,0 +1,107 @@
+.create_container {
+    display: block;
+    margin: auto;
+    width: 800px;
+    height: 200px;
+    margin-top: 200px;
+
+
+}
+
+.create_1 {
+    font-size: 30px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    left: 50%;
+    position: relative;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.create_1 label {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    font-size: 25px;
+    font-weight: 400;
+    color: #7b4848;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+    transition: bottom .2s;
+}
+
+.create_2 {
+    border: none;
+    width: 100%;
+    display: block;
+    padding: 16px 12px 2px 6px;
+    font-size: 30px;
+    background: none;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+
+.create_button {
+    width: 180px;
+    padding: 4px 0;
+    position: absolute;
+    left: 48%;
+    top: 50%;
+    display: inline-block;
+    padding: 1.2em 2em;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    color: white;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    border-radius: 4px;
+    transition: box-shadow .5s ease, transform .2s ease;
+    will-change: transform;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+}
+
+button {
+    font-family: 'Roboto';
+    text-align: center;
+    text-transform: uppercase;
+    color: black;
+    user-select: none;
+    font-size: 24px;
+}
+
+
+/* .create_button ::before{
+    content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		background: linear-gradient(135deg, #6e8efb, #a777e3);
+		border-radius: 4px;
+		transition: box-shadow .5s ease, transform .2s ease; 
+		will-change: transform;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+		transform:
+			translateY(var(--ty, 0))
+			rotateX(var(--rx, 0))
+			rotateY(var(--ry, 0))
+			translateZ(var(--tz, -12px));
+
+} */
+/* .create_button :hover::before{
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+} */
+
+/* .create_button ::after{
+    position: relative;
+    display: inline-block;
+    content: attr(data-title);
+    transition: transform .2s ease; 
+    font-weight: bold;
+    letter-spacing: .01em;
+    will-change: transform;
+    transform:
+        translateY(var(--ty, 0))
+        rotateX(var(--rx, 0))
+        rotateY(var(--ry, 0));
+} */
