@@ -5,19 +5,11 @@ import { withRouter } from 'react-router-dom';
 
 function Main() {
     return (
-        <div>
-            <div>
-                <button>Hot Topic</button>
-            </div>
-            <div>
-                <button>Create MeetingRoom</button>
-            </div>
-            <div>
-                <button>Join MeetingRoom</button>
-            </div>
-            <div>
-                <button>Friends</button>
-            </div>
+        <div class="content-3d">
+            <button className='btn-3d green'>Hot Topic</button>
+            <button className='btn-3d purple'>Create MeetingRoom</button>
+            <button className='btn-3d cyan'>Join MeetingRoom</button>
+            <button className='btn-3d yellow'>Friends</button>
         </div>
 
     );
