@@ -8,6 +8,7 @@ import {
   Switch
 } from "react-router-dom";
 
+import Mainhome from './pages/mainhome/mainhome';
 import Authentication from './pages/authentication/authentication';
 import Home from './pages/home/home';
 import FourOFour from './pages/four-o-four/four-o-four';
@@ -17,7 +18,8 @@ function App() {
   return (
      <Router>
         <Switch>
-          <Route path="/" exact component={Authentication} />
+          <Route path="/" exact component={Mainhome} />
+          <Route path="/authentication" component={Authentication} />
           <Route path="/home/" component={Home} />
           <Route path="/createroom/" component={CreateRoom} />
           <Route path="/groupchat/" component={Groupchat} />

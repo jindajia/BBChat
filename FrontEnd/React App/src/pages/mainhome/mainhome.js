@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 
+import './mainhome.css'
 
-function Main() {
+function Mainhome() {
     return (
         <div class="content-3d">
             <button className='btn-3d green'>Hot Topic</button>
@@ -16,9 +17,5 @@ function Main() {
 
 }
 
-// ReactDOM.render(
-//     <Main />,
-//     document.getElementById('root')
-// );
 
-export default withRouter(Main);
+export default Mainhome;

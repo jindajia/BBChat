@@ -4,6 +4,7 @@ import './authentication.css';
 
 import Login from './login/login';
 import Registration from './registration/registration'
+import { withRouter } from 'react-router-dom';
 
 function Authentication() {
 
@@ -50,4 +51,4 @@ function Authentication() {
   );
 }
 
-export default Authentication;
+export default withRouter(Authentication);
