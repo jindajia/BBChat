@@ -61,6 +61,8 @@ func IsUsernameAvailable(responseWriter http.ResponseWriter, request *http.Reque
 		ReturnResponse(responseWriter, request, response)
 	}
 }
+// To be decided: whether or not we should check duplicate room names?
+
 
 //Login function will login the users
 func Login(responseWriter http.ResponseWriter, request *http.Request) {
@@ -215,6 +217,34 @@ func UserSessionCheck(responseWriter http.ResponseWriter, request *http.Request)
 }
 
 //GetMessagesHandler function will fetch the messages between two users
+func GetDriftBottlesHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
+	toUserID := mux.Vars(request)["toUserID"]
+	fromUserID := mux.Vars(request)["fromUserID"]
+
+	if !IsAlphaNumeric(fromUserID) {
+		response := APIResponseStruct{
+			Code:     http.StatusBadRequest,
+			Status:   http.StatusText(http.StatusBadRequest),
+			Message:  "Username can't be empty.",
+			Response: nil,
+		}
+		ReturnResponse(responseWriter, request, response)
+	} else {
+		bottles := GetBlindChattingBetweenTwoUsers(toUserID, fromUserID)
+		response := APIResponseStruct{
+			Code:     http.StatusOK,
+			Status:   http.StatusText(http.StatusOK),
+			Message:  "Username is available.",
+			Response: bottles,
+		}
+		ReturnResponse(responseWriter, request, response)
+	}
+}
+
+
+
+//GetMessagesHandler function will fetch the messages between two users
 func GetMessagesHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
 	toUserID := mux.Vars(request)["toUserID"]
@@ -243,6 +273,32 @@ func GetMessagesHandler(responseWriter http.ResponseWriter, request *http.Reques
 			Status:   http.StatusText(http.StatusOK),
 			Message:  "Username is available.",
 			Response: conversations,
+		}
+		ReturnResponse(responseWriter, request, response)
+	}
+}
+
+//GetMessagesHandler function will fetch the messages between two users
+func GetBroadcastHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
+
+	fromUserID := mux.Vars(request)["fromUserID"]
+
+	if !IsAlphaNumeric(fromUserID) {
+		response := APIResponseStruct{
+			Code:     http.StatusBadRequest,
+			Status:   http.StatusText(http.StatusBadRequest),
+			Message:  "Username can't be empty.",
+			Response: nil,
+		}
+		ReturnResponse(responseWriter, request, response)
+	} else {
+		broadcasts := GetBroadcast()
+		response := APIResponseStruct{
+			Code:     http.StatusOK,
+			Status:   http.StatusText(http.StatusOK),
+			Message:  "Username is available.",
+			Response: broadcasts,
 		}
 		ReturnResponse(responseWriter, request, response)
 	}

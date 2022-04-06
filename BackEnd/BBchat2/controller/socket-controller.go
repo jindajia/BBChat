@@ -86,6 +86,47 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 			})
 		}
 
+	case "driftBottle":
+        	message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
+            fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+            toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
+
+        		if message != "" && fromUserID != "" && toUserID != "" {
+
+        			driftBottlePacket := DriftBottlePayloadStruct{
+        				FromUserID: fromUserID,
+        				Message:    message,
+        				ToUserID:   toUserID,
+        			}
+        			StoreNewDriftBottles(driftBottlePacket)
+        			allOnlineUsersPayload := SocketEventStruct{
+        				EventName:    "driftbottle-response",
+        				EventPayload: driftBottlePacket,
+        			}
+        			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
+
+        		}
+
+    case "image":
+    		image := (socketEventPayload.EventPayload.(map[string]interface{})["image"]).(string)
+    		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+    		toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
+
+    		if image != "" && fromUserID != "" && toUserID != "" {
+
+    			imagePacket := ImagePayloadStruct{
+    				FromUserID: fromUserID,
+    				Image:    image,
+    				ToUserID:   toUserID,
+    			}
+    			StoreNewChatImages(imagePacket)
+    			allOnlineUsersPayload := SocketEventStruct{
+    				EventName:    "image-response",
+    				EventPayload: imagePacket,
+    			}
+    			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
+
+    		}
 	case "message":
 		message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
 		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
@@ -106,6 +147,28 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
 
 		}
+    case "broadcast":
+    		message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
+    		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+
+
+    		if message != "" && fromUserID != "" {
+
+
+    			messagePacket := MessagePayloadStruct{
+    				FromUserID: fromUserID,
+    				Message:    message,
+
+    			}
+    			StoreNewBroadcastMessages(messagePacket)
+    			allOnlineUsersPayload := SocketEventStruct{
+    				EventName:    "message-response",
+    				EventPayload: messagePacket,
+    			}
+    			BroadcastSocketEventToAllClient(client.hub, allOnlineUsersPayload)
+
+    		}
+
 	}
 }
 
@@ -265,3 +328,11 @@ func BroadcastSocketEventToAllClientExceptMe(hub *Hub, payload SocketEventStruct
 		}
 	}
 }
+
+
+//Todo :maybe we also need the following event :
+//room invitation event: invite a user into an existed room-> a member of a room send an invitation to a user for join the chatting room
+//accept invitation event: accept the invitation for joining in a room => may there should be pop up window? or a message like invitation
+// room disband event:
+// member remove event:
+// transfer administration role event??
