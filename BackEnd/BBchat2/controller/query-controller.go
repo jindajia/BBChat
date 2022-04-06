@@ -119,7 +119,7 @@ func RegisterQueryHandler(userDetailsRequestPayload UserDetailsRequestPayloadStr
 		if newPasswordHashError != nil {
 			return "", errors.New("Request failed to complete, we are working on it")
 		}
-		collection := db.MongoDBClient.Database("BBchattest").Collection("users")
+		collection := db.MongoDBClient.Database("BBChatTest").Collection("users")
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 		registrationQueryResponse, registrationError := collection.InsertOne(ctx, bson.M{
@@ -156,11 +156,11 @@ func GetAllOnlineUsers(userID string) []UserDetailsResponsePayloadStruct {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	cursor, queryError := collection.Find(ctx, bson.M{
-		"online": "Y",
-		"_id": bson.M{
-			"$ne": docID,
-		},
-	})
+        "online": "Y",
+        "_id":bson.M{
+            "$ne": docID,
+        },
+    })
 	defer cancel()
 
 	if queryError != nil {
@@ -184,6 +184,7 @@ func GetAllOnlineUsers(userID string) []UserDetailsResponsePayloadStruct {
 	return onlineUsers
 }
 
+
 // StoreNewChatMessages is used for storing a new message
 func StoreNewChatMessages(messagePayload MessagePayloadStruct) bool {
 	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("messages")
@@ -201,6 +202,58 @@ func StoreNewChatMessages(messagePayload MessagePayloadStruct) bool {
 	}
 	return true
 }
+
+func StoreNewBroadcastMessages(messagePayload MessagePayloadStruct) bool {
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("broadcasts")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	_, registrationError := collection.InsertOne(ctx, bson.M{
+		"fromUserID": messagePayload.FromUserID,
+		"message":    messagePayload.Message,
+	})
+	defer cancel()
+
+	if registrationError == nil {
+		return false
+	}
+	return true
+}
+
+// StoreNewChatMessages is used for storing a new message
+func StoreNewDriftBottles(driftBottlePayload DriftBottlePayloadStruct) bool {
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("driftBottles")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	_, registrationError := collection.InsertOne(ctx, bson.M{
+		"fromUserID": driftBottlePayload.FromUserID,
+		"message":    driftBottlePayload.Message,
+		"toUserID":   driftBottlePayload.ToUserID,
+	})
+	defer cancel()
+
+	if registrationError == nil {
+		return false
+	}
+	return true
+}
+
+func StoreNewChatImages(imagePayload ImagePayloadStruct) bool {
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("messages")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	_, registrationError := collection.InsertOne(ctx, bson.M{
+		"fromUserID": imagePayload.FromUserID,
+		"image":    imagePayload.Image,
+		"toUserID":   imagePayload.ToUserID,
+	})
+	defer cancel()
+
+	if registrationError == nil {
+		return false
+	}
+	return true
+}
+
 
 // GetConversationBetweenTwoUsers will be used to fetch the conversation between two users
 func GetConversationBetweenTwoUsers(toUserID string, fromUserID string) []ConversationStruct {
@@ -252,11 +305,100 @@ func GetConversationBetweenTwoUsers(toUserID string, fromUserID string) []Conver
 				FromUserID: conversation.FromUserID,
 				ToUserID:   conversation.ToUserID,
 				Message:    conversation.Message,
+				Image:      conversation.Image,
 			})
 		}
 	}
 	return conversations
 }
+
+func GetBlindChattingBetweenTwoUsers(toUserID string, fromUserID string) []BlindChattingStruct {
+	var blindChattings []BlindChattingStruct
+
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("driftBottles")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	queryCondition := bson.M{
+		"$or": []bson.M{
+			{
+				"$and": []bson.M{
+					{
+						"toUserID": toUserID,
+					},
+					{
+						"fromUserID": fromUserID,
+					},
+				},
+			},
+			{
+				"$and": []bson.M{
+					{
+						"toUserID": fromUserID,
+					},
+					{
+						"fromUserID": toUserID,
+					},
+				},
+			},
+		},
+	}
+
+	cursor, queryError := collection.Find(ctx, queryCondition)
+	defer cancel()
+
+	if queryError != nil {
+		return blindChattings
+	}
+
+	for cursor.Next(context.TODO()) {
+		//Create a value into which the single document can be decoded
+		var blindChatting BlindChattingStruct
+		err := cursor.Decode(&blindChatting)
+
+		if err == nil {
+			blindChattings = append(blindChattings, BlindChattingStruct{
+				ID:         blindChatting.ID,
+				FromUserID: blindChatting.FromUserID,
+				ToUserID:   blindChatting.ToUserID,
+				Message:    blindChatting.Message,
+				Image:      blindChatting.Image,
+			})
+		}
+	}
+	return blindChattings
+
+}
+
+func GetBroadcast()[]BroadcastStruct {
+    var broadcasts []BroadcastStruct
+
+    collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("broadcasts")
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    cursor, queryError := collection.Find(ctx,bson.D{{}})
+    defer cancel()
+
+    if queryError != nil {
+        return broadcasts
+    }
+
+    for cursor.Next(context.TODO()) {
+        //Create a value into which the single document can be decoded
+        var broadcast BroadcastStruct
+        err := cursor.Decode(&broadcast)
+
+        if err == nil {
+            broadcasts = append(broadcasts, BroadcastStruct{
+                ID:         broadcast.ID,
+                FromUserID: broadcast.FromUserID,
+                Message:    broadcast.Message,
+                Image:      broadcast.Image,
+            })
+        }
+    }
+    return broadcasts
+}
+
+
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	if err != nil {

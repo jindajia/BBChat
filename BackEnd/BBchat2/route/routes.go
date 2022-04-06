@@ -30,6 +30,10 @@ func AddApproutes(route *mux.Router) {
 
 	route.HandleFunc("/getConversation/{toUserID}/{fromUserID}", controllers.GetMessagesHandler)
 
+    route.HandleFunc("/getBroadcast/{fromUserID}", controllers.GetBroadcastHandler)
+
+    route.HandleFunc("/getDriftBottle/{toUserID}/{fromUserID}", controllers.GetDriftBottlesHandler)
+
 	route.HandleFunc("/ws/{userID}", func(responseWriter http.ResponseWriter, request *http.Request) {
 		var upgrader = websocket.Upgrader{
 			ReadBufferSize:  1024,

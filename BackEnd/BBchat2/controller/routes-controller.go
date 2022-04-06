@@ -61,6 +61,8 @@ func IsUsernameAvailable(responseWriter http.ResponseWriter, request *http.Reque
 		ReturnResponse(responseWriter, request, response)
 	}
 }
+// To be decided: whether or not we should check duplicate room names?
+
 
 //Login function will login the users
 func Login(responseWriter http.ResponseWriter, request *http.Request) {
@@ -215,6 +217,34 @@ func UserSessionCheck(responseWriter http.ResponseWriter, request *http.Request)
 }
 
 //GetMessagesHandler function will fetch the messages between two users
+func GetDriftBottlesHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
+	toUserID := mux.Vars(request)["toUserID"]
+	fromUserID := mux.Vars(request)["fromUserID"]
+
+	if !IsAlphaNumeric(fromUserID) {
+		response := APIResponseStruct{
+			Code:     http.StatusBadRequest,
+			Status:   http.StatusText(http.StatusBadRequest),
+			Message:  "Username can't be empty.",
+			Response: nil,
+		}
+		ReturnResponse(responseWriter, request, response)
+	} else {
+		bottles := GetBlindChattingBetweenTwoUsers(toUserID, fromUserID)
+		response := APIResponseStruct{
+			Code:     http.StatusOK,
+			Status:   http.StatusText(http.StatusOK),
+			Message:  "Username is available.",
+			Response: bottles,
+		}
+		ReturnResponse(responseWriter, request, response)
+	}
+}
+
+
+
+//GetMessagesHandler function will fetch the messages between two users
 func GetMessagesHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
 	toUserID := mux.Vars(request)["toUserID"]
@@ -248,137 +278,29 @@ func GetMessagesHandler(responseWriter http.ResponseWriter, request *http.Reques
 	}
 }
 
-func CreatRoom(responseWriter http.ResponseWriter, request *http.Request) {
-	var CreateRoomDetailResponsePayload CreateRoomDetailResponsePayloadStruct
-	decoder := json.NewDecoder(request.Body)
-	requestDecoderError := decoder.Decode(&CreateRoomDetailResponsePayload)
-	defer request.Body.Close()
+//GetMessagesHandler function will fetch the messages between two users
+func GetBroadcastHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
 
-	if requestDecoderError != nil {
+	fromUserID := mux.Vars(request)["fromUserID"]
+
+	if !IsAlphaNumeric(fromUserID) {
 		response := APIResponseStruct{
 			Code:     http.StatusBadRequest,
 			Status:   http.StatusText(http.StatusBadRequest),
-			Message:  "Request failed to complete, we are working on it",
+			Message:  "Username can't be empty.",
 			Response: nil,
 		}
 		ReturnResponse(responseWriter, request, response)
 	} else {
-		if CreateRoomDetailResponsePayload.RoomNo == "" {
-			response := APIResponseStruct{
-				Code:     http.StatusBadRequest,
-				Status:   http.StatusText(http.StatusBadRequest),
-				Message:  "RoomNo can't be empty.",
-				Response: nil,
-			}
-			ReturnResponse(responseWriter, request, response)
-		}
-		if CreateRoomDetailResponsePayload.GenerateRoomPassword == "" {
-			response := APIResponseStruct{
-				Code:     http.StatusBadRequest,
-				Status:   http.StatusText(http.StatusBadRequest),
-				Message:  "You need to decide whether generate password or not.",
-				Response: nil,
-			}
-			ReturnResponse(responseWriter, request, response)
-		}
-		if CreateRoomDetailResponsePayload.GenerateRoomPassword == "No" && CreateRoomDetailResponsePayload.RoomPassword == "" {
-			response := APIResponseStruct{
-				Code:     http.StatusBadRequest,
-				Status:   http.StatusText(http.StatusBadRequest),
-				Message:  "Password cannot be empty.",
-				Response: nil,
-			}
-			ReturnResponse(responseWriter, request, response)
-		} else {
-			roomres, roomerror := RoomNoavailableQueryHandle(CreateRoomDetailResponsePayload)
-			if roomerror != nil {
-				response := APIResponseStruct{
-					Code:     http.StatusBadRequest,
-					Status:   http.StatusText(http.StatusBadRequest),
-					Message:  "",
-					Response: roomerror,
-				}
-				ReturnResponse(responseWriter, request, response)
-			} else if roomres == "Yes" {
-				roomcreateerror, RoomInfor := CreateRoomQueryHandler(CreateRoomDetailResponsePayload)
-				if roomcreateerror != nil {
-					response := APIResponseStruct{
-						Code:     http.StatusBadRequest,
-						Status:   http.StatusText(http.StatusBadRequest),
-						Message:  "",
-						Response: roomcreateerror,
-					}
-					ReturnResponse(responseWriter, request, response)
-				} else {
-					response := APIResponseStruct{
-						Code:     http.StatusBadRequest,
-						Status:   http.StatusText(http.StatusBadRequest),
-						Message:  "You have created a chat room",
-						Response: RoomInfor,
-					}
-					ReturnResponse(responseWriter, request, response)
-				}
-			}
-		}
-
-	}
-
-}
-
-func JoinRoom(responseWriter http.ResponseWriter, request *http.Request) {
-	var JoinRoomDetailResponsePayload JoinRoomDetailResponsePayloadStruct
-	decoder := json.NewDecoder(request.Body)
-	requestDecoderError := decoder.Decode(&JoinRoomDetailResponsePayload)
-	defer request.Body.Close()
-
-	if requestDecoderError != nil {
+		broadcasts := GetBroadcast()
 		response := APIResponseStruct{
-			Code:     http.StatusBadRequest,
-			Status:   http.StatusText(http.StatusBadRequest),
-			Message:  "Request failed to complete, we are working on it",
-			Response: nil,
+			Code:     http.StatusOK,
+			Status:   http.StatusText(http.StatusOK),
+			Message:  "Username is available.",
+			Response: broadcasts,
 		}
 		ReturnResponse(responseWriter, request, response)
-	} else {
-		if JoinRoomDetailResponsePayload.RoomNo == "" {
-			response := APIResponseStruct{
-				Code:     http.StatusBadRequest,
-				Status:   http.StatusText(http.StatusBadRequest),
-				Message:  "RoomNo can't be empty.",
-				Response: nil,
-			}
-			ReturnResponse(responseWriter, request, response)
-		}
-	}
-	if JoinRoomDetailResponsePayload.RoomPassword == "" {
-		response := APIResponseStruct{
-			Code:     http.StatusBadRequest,
-			Status:   http.StatusText(http.StatusBadRequest),
-			Message:  "Room Password can't be empty.",
-			Response: nil,
-		}
-		ReturnResponse(responseWriter, request, response)
-
-	} else {
-		joinres, err := JoinRoomQueryHandler(JoinRoomDetailResponsePayload)
-		if err != nil {
-			response := APIResponseStruct{
-				Code:     http.StatusBadRequest,
-				Status:   http.StatusText(http.StatusBadRequest),
-				Message:  JoinRoomDetailResponsePayload.Username + "cannot join the group chat room",
-				Response: err,
-			}
-			ReturnResponse(responseWriter, request, response)
-		} else {
-			response := APIResponseStruct{
-				Code:     http.StatusBadRequest,
-				Status:   http.StatusText(http.StatusBadRequest),
-				Message:  "user joint the group chat",
-				Response: joinres,
-			}
-			ReturnResponse(responseWriter, request, response)
-
-		}
-
 	}
 }
+
