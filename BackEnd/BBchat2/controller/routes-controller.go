@@ -303,3 +303,4 @@ func GetBroadcastHandler(responseWriter http.ResponseWriter, request *http.Reque
 		ReturnResponse(responseWriter, request, response)
 	}
 }
+

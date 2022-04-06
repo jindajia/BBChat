@@ -1,6 +1,9 @@
 package handlers
 
-import "github.com/gorilla/websocket"
+import (
+	"github.com/gorilla/websocket"
+	"time"
+)
 
 // UserDetailsStruct is a universal struct for mapping the user details
 type UserDetailsStruct struct {
@@ -72,6 +75,7 @@ type MessagePayloadStruct struct {
 	Image      string `json:"image"`
 }
 
+
 // DriftBottlePayloadStruct is a struct used for drift bottle message Payload
 type DriftBottlePayloadStruct struct {
 	FromUserID string `json:"fromUserID"`
@@ -115,3 +119,4 @@ type ImagePayloadStruct struct {
 // 	Updated_at time.Time `json:"updated_at"`
 // 	Room_id    string    `json:"room_id"`
 // }
+
