@@ -24,8 +24,8 @@ function Mainhome() {
 
             <div class="content-3d">
                 <button className='btn-3d green'>Hot Topic</button>
-                <button className='btn-3d purple'>Create MeetingRoom</button>
-                <button className='btn-3d cyan'>Join MeetingRoom</button>
+                <button className='btn-3d purple'>New Meeting</button>
+                <button className='btn-3d cyan'>Join</button>
                 <button className='btn-3d yellow'>Friends</button>
             </div>
 
