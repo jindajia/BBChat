@@ -6,13 +6,30 @@ import './mainhome.css'
 
 function Mainhome() {
     return (
-        <div class="content-3d">
-            <button className='btn-3d green'>Hot Topic</button>
-            <button className='btn-3d purple'>Create MeetingRoom</button>
-            <button className='btn-3d cyan'>Join MeetingRoom</button>
-            <button className='btn-3d yellow'>Friends</button>
-        </div>
 
+        <div>
+            <div className='container'>
+                <div className='logo'></div>
+                <div className='nav'>
+                    <nav>
+                        <ul>
+                            <li><button className='navbutton'>Home</button></li>
+                            <li><button className='navbutton'>Chat</button></li>
+                            <li><button className='navbutton'>Register</button></li>
+                            <li><button className='navbutton'>Login</button></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="content-3d">
+                <button className='btn-3d green'>Hot Topic</button>
+                <button className='btn-3d purple'>Create MeetingRoom</button>
+                <button className='btn-3d cyan'>Join MeetingRoom</button>
+                <button className='btn-3d yellow'>Friends</button>
+            </div>
+
+        </div>
     );
 
 }
