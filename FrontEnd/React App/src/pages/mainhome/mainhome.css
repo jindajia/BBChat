@@ -1,10 +1,56 @@
+.tp-title{
+	background-image: url(./hottopic.jpeg);
+	background-position: center center;
+	color: #bcdc91;
+	text-align: center;
+	width: 400px;
+	height: 100px;
+	font-size: 20px;
+	line-height: 100px;
+	border-radius: 10px;
+
+}
+
+.hp{
+	font-family: 'Times New Roman', Times, serif;
+	white-space: pre-line;
+	word-break: break-all;
+}
+
+.tp-container-out{
+	background-image: url(./background.jpeg);
+	background-repeat: no-repeat;
+	background-position: center center;
+	/* background-size: 400px 350px; */
+	width: 400px;
+	height: 350px;
+	border: 1px solid black;
+	
+}
+
+.tp-container-in{
+	position: absolute;
+	left: 25%;
+	width: 200px;
+	height: 350px;
+	display: flex;
+	text-align: center;
+	font-size: 16px;
+	line-height: 35px;
+}
+
+.tp-cl-container{
+	position: absolute;
+	left: 60%;
+}
+
 .tp-cl-container{
 	position: absolute;
 	left: 60%;
 }
 
 .clock-container{
-	background-image: url(./clock.jpeg);
+	background-image: url(./background3.jpeg);
 	background-repeat: no-repeat;
 	background-position: center center;
 	width: 400px;
@@ -16,17 +62,19 @@
 
 .year{
 	position: absolute;
-	top: 10%;
+	top: 5%;
 	font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-	color: #ffffff;
+	color: #15bc71;
+	left: 5%;
 }
 
 .hour{
 	position: absolute;
-	top: 40%;
+	top: 15%;
 	font-family: fantasy;
-	color: #ffffff;
+	color: #1e0b41;
 	font-size: 60px;
+	left: 5%;
 }
 
 .container {

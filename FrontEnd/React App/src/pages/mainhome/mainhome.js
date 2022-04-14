@@ -43,6 +43,37 @@ class Clock extends React.Component {
     }
 }
 
+class Hottopic extends React.Component {
+    state = {
+        topic: [
+            { id: 1, content: 'Afghanistan' },
+            { id: 2, content: 'AMC Stock' },
+            { id: 3, content: 'COVID Vaccine' },
+            { id: 4, content: 'Dogecoin' },
+            { id: 5, content: 'GME Stock' },
+            { id: 6, content: 'Stimulus Check' },
+            { id: 7, content: 'Georgia Senate Race' },
+            { id: 8, content: 'Hurricane Ida' },
+            { id: 9, content: 'COVID' },
+            { id: 10, content: 'Ethereum Price' }
+        ]
+    }
+
+    render() {
+        return (
+            <div>
+                <ul>
+                    {this.state.topic.map(item => (
+                        <li key={item.id}>
+                            <h3 className='hp'>{item.id} : {item.content}</h3>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    }
+}
+
 function Mainhome() {
     return (
 
@@ -65,8 +96,13 @@ function Mainhome() {
                 <div className='clock-container'>
                     <Clock />
                 </div>
-                <div className='tp-container'>
-
+                <div className='tp-title'>
+                    <h1>Today's Hot Topic</h1>
+                </div>
+                <div className='tp-container-out'>
+                    <div className='tp-container-in'>
+                        <Hottopic />
+                    </div>
                 </div>
             </div>
 
