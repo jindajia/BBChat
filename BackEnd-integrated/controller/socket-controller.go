@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -85,47 +86,47 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 				},
 			})
 		}
-    case "driftBottle":
-            	message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
-                fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
-                toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
+	case "driftBottle":
+		message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
+		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+		toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
 
-            		if message != "" && fromUserID != "" && toUserID != "" {
+		if message != "" && fromUserID != "" && toUserID != "" {
 
-            			driftBottlePacket := DriftBottlePayloadStruct{
-            				FromUserID: fromUserID,
-            				Message:    message,
-            				ToUserID:   toUserID,
-            			}
-            			StoreNewDriftBottles(driftBottlePacket)
-            			allOnlineUsersPayload := SocketEventStruct{
-            				EventName:    "driftbottle-response",
-            				EventPayload: driftBottlePacket,
-            			}
-            			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
+			driftBottlePacket := DriftBottlePayloadStruct{
+				FromUserID: fromUserID,
+				Message:    message,
+				ToUserID:   toUserID,
+			}
+			StoreNewDriftBottles(driftBottlePacket)
+			allOnlineUsersPayload := SocketEventStruct{
+				EventName:    "driftbottle-response",
+				EventPayload: driftBottlePacket,
+			}
+			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
 
-            		}
+		}
 
-    case "image":
-            image := (socketEventPayload.EventPayload.(map[string]interface{})["image"]).(string)
-            fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
-            toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
+	case "image":
+		image := (socketEventPayload.EventPayload.(map[string]interface{})["image"]).(string)
+		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+		toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
 
-            if image != "" && fromUserID != "" && toUserID != "" {
+		if image != "" && fromUserID != "" && toUserID != "" {
 
-                imagePacket := ImagePayloadStruct{
-                    FromUserID: fromUserID,
-                    Image:    image,
-                    ToUserID:   toUserID,
-                }
-                StoreNewChatImages(imagePacket)
-                allOnlineUsersPayload := SocketEventStruct{
-                    EventName:    "image-response",
-                    EventPayload: imagePacket,
-                }
-                EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
+			imagePacket := ImagePayloadStruct{
+				FromUserID: fromUserID,
+				Image:      image,
+				ToUserID:   toUserID,
+			}
+			StoreNewChatImages(imagePacket)
+			allOnlineUsersPayload := SocketEventStruct{
+				EventName:    "image-response",
+				EventPayload: imagePacket,
+			}
+			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
 
-            }
+		}
 	case "message":
 		message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
 		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
@@ -146,26 +147,24 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 			EmitToSpecificClient(client.hub, allOnlineUsersPayload, toUserID)
 
 		}
-    case "broadcast":
-            message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
-            fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+	case "broadcast":
+		message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
+		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
 
-            if message != "" && fromUserID != "" {
+		if message != "" && fromUserID != "" {
 
+			messagePacket := MessagePayloadStruct{
+				FromUserID: fromUserID,
+				Message:    message,
+			}
+			StoreNewBroadcastMessages(messagePacket)
+			allOnlineUsersPayload := SocketEventStruct{
+				EventName:    "message-response",
+				EventPayload: messagePacket,
+			}
+			BroadcastSocketEventToAllClient(client.hub, allOnlineUsersPayload)
 
-                messagePacket := MessagePayloadStruct{
-                    FromUserID: fromUserID,
-                    Message:    message,
-
-                }
-                StoreNewBroadcastMessages(messagePacket)
-                allOnlineUsersPayload := SocketEventStruct{
-                    EventName:    "message-response",
-                    EventPayload: messagePacket,
-                }
-                BroadcastSocketEventToAllClient(client.hub, allOnlineUsersPayload)
-
-            }
+		}
 
 	case "add_friends":
 		message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
@@ -265,6 +264,24 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 					EmitToSpecificClient(client.hub, reAccFrinedsMessage, fromUserID)
 
 				}
+			}
+		}
+	case "room-chat":
+		message := (socketEventPayload.EventPayload.(map[string]interface{})["message"]).(string)
+		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
+		toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
+		if message != "" && fromUserID != "" && toUserID != "" {
+			roomstruct := ChatMemberList(toUserID)
+			if roomstruct.RoomMember != "" {
+				reAddChatsMessage := SocketEventStruct{
+					EventName: "chatmessage-response",
+					EventPayload: MessagePayloadStruct{
+						FromUserID: fromUserID,
+						Message:    message,
+						ToUserID:   toUserID,
+					},
+				}
+				EmitToChatMember(client.hub, reAddChatsMessage, roomstruct.RoomMember)
 			}
 		}
 
@@ -372,6 +389,22 @@ func HandleUserRegisterEvent(hub *Hub, client *Client) {
 		EventName:    "join",
 		EventPayload: client.userID,
 	})
+}
+func EmitToChatMember(hub *Hub, payload SocketEventStruct, userMember string) {
+	s := strings.Split(userMember, " ")
+	for client := range hub.clients {
+		for _, eachItem := range s {
+			if eachItem == client.userID {
+				select {
+				case client.send <- payload:
+				default:
+					close(client.send)
+					delete(hub.clients, client)
+				}
+			}
+
+		}
+	}
 }
 
 // HandleUserDisconnectEvent will handle the Disconnect event for socket users

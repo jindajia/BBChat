@@ -266,7 +266,7 @@ func StoreNewChatImages(imagePayload ImagePayloadStruct) bool {
 
 	_, registrationError := collection.InsertOne(ctx, bson.M{
 		"fromUserID": imagePayload.FromUserID,
-		"image":    imagePayload.Image,
+		"image":      imagePayload.Image,
 		"toUserID":   imagePayload.ToUserID,
 	})
 	defer cancel()
@@ -391,33 +391,33 @@ func GetBlindChattingBetweenTwoUsers(toUserID string, fromUserID string) []Blind
 
 }
 
-func GetBroadcast()[]BroadcastStruct {
-    var broadcasts []BroadcastStruct
+func GetBroadcast() []BroadcastStruct {
+	var broadcasts []BroadcastStruct
 
-    collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("broadcasts")
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-    cursor, queryError := collection.Find(ctx,bson.D{{}})
-    defer cancel()
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("broadcasts")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	cursor, queryError := collection.Find(ctx, bson.D{{}})
+	defer cancel()
 
-    if queryError != nil {
-        return broadcasts
-    }
+	if queryError != nil {
+		return broadcasts
+	}
 
-    for cursor.Next(context.TODO()) {
-        //Create a value into which the single document can be decoded
-        var broadcast BroadcastStruct
-        err := cursor.Decode(&broadcast)
+	for cursor.Next(context.TODO()) {
+		//Create a value into which the single document can be decoded
+		var broadcast BroadcastStruct
+		err := cursor.Decode(&broadcast)
 
-        if err == nil {
-            broadcasts = append(broadcasts, BroadcastStruct{
-                ID:         broadcast.ID,
-                FromUserID: broadcast.FromUserID,
-                Message:    broadcast.Message,
-                Image:      broadcast.Image,
-            })
-        }
-    }
-    return broadcasts
+		if err == nil {
+			broadcasts = append(broadcasts, BroadcastStruct{
+				ID:         broadcast.ID,
+				FromUserID: broadcast.FromUserID,
+				Message:    broadcast.Message,
+				Image:      broadcast.Image,
+			})
+		}
+	}
+	return broadcasts
 }
 
 func HashPassword(password string) (string, error) {
@@ -670,4 +670,13 @@ func UpdateFriendsList(messagePayload MessagePayloadStruct) error {
 	defer cancel()
 	return nil
 
+}
+
+func ChatMemberList(roomId string) RoomDBstruct {
+	collection := db.MongoDBClient.Database("BBchattest").Collection("room")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	var roomdbstruct RoomDBstruct
+	_ = collection.FindOne(ctx, bson.M{"_id": roomId}).Decode(&roomdbstruct)
+	defer cancel()
+	return roomdbstruct
 }
