@@ -271,7 +271,13 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 		fromUserID := (socketEventPayload.EventPayload.(map[string]interface{})["fromUserID"]).(string)
 		toUserID := (socketEventPayload.EventPayload.(map[string]interface{})["toUserID"]).(string)
 		if message != "" && fromUserID != "" && toUserID != "" {
+			messagePacket := MessagePayloadStruct{
+				FromUserID: fromUserID,
+				Message:    message,
+				ToUserID:   toUserID,
+			}
 			roomstruct := ChatMemberList(toUserID)
+			StoreNewRoomChatMessages(messagePacket)
 			if roomstruct.RoomMember != "" {
 				reAddChatsMessage := SocketEventStruct{
 					EventName: "chatmessage-response",
@@ -284,7 +290,6 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 				EmitToChatMember(client.hub, reAddChatsMessage, roomstruct.RoomMember)
 			}
 		}
-
 	}
 
 }

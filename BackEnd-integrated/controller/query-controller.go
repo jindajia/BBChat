@@ -226,6 +226,24 @@ func StoreNewChatMessages(messagePayload MessagePayloadStruct) bool {
 	}
 	return true
 }
+func StoreNewRoomChatMessages(messagePayload MessagePayloadStruct) bool {
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("chatmessages")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	tim := time.Now()
+	_, registrationError := collection.InsertOne(ctx, bson.M{
+		"fromUserID":  messagePayload.FromUserID,
+		"message":     messagePayload.Message,
+		"roomNo":      messagePayload.ToUserID,
+		"sendingtime": tim,
+	})
+	defer cancel()
+
+	if registrationError == nil {
+		return false
+	}
+	return true
+}
+
 func StoreNewBroadcastMessages(messagePayload MessagePayloadStruct) bool {
 	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("broadcasts")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -489,6 +507,7 @@ func RoomNoavailableQueryHandle(CreateRoomDetailResponsePayload CreateRoomDetail
 func CreateRoomQueryHandler(CreateRoomDetailResponsePayload CreateRoomDetailResponsePayloadStruct) (error, RoomInforStruct) {
 	var RoomInfor RoomInforStruct
 	var pass string
+	var roomNoo string
 	var roomdb RoomDBstruct
 	ti := time.Now()
 	if CreateRoomDetailResponsePayload.GenerateRoomPassword == "Yes" {
@@ -496,6 +515,7 @@ func CreateRoomQueryHandler(CreateRoomDetailResponsePayload CreateRoomDetailResp
 	} else {
 		pass = CreateRoomDetailResponsePayload.RoomPassword
 	}
+	roomNoo = generateroomnoo()
 	newPasswordHash, newPasswordHashError := HashPassword(pass)
 	if newPasswordHashError != nil {
 		return errors.New("Request failed to complete, we are working on it"), RoomInfor
@@ -503,16 +523,14 @@ func CreateRoomQueryHandler(CreateRoomDetailResponsePayload CreateRoomDetailResp
 
 	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("room")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	count, _ := collection.CountDocuments(ctx, bson.M{"roomNo": CreateRoomDetailResponsePayload.RoomNo})
-	if count != 0 {
 
-	}
 	createRoomQueryResponse, createRoomError := collection.InsertOne(ctx, bson.M{
 		"username":     CreateRoomDetailResponsePayload.Username,
 		"roomPassword": newPasswordHash,
-		"roomNo":       CreateRoomDetailResponsePayload.RoomNo,
+		"roomNo":       roomNoo,
 		"createtime":   ti,
 		"roommember":   CreateRoomDetailResponsePayload.UserID,
+		"roomName":     CreateRoomDetailResponsePayload.RoomName,
 	})
 
 	createroomQueryObjectID, createroomQueryObjectIDError := createRoomQueryResponse.InsertedID.(primitive.ObjectID)
@@ -526,8 +544,9 @@ func CreateRoomQueryHandler(CreateRoomDetailResponsePayload CreateRoomDetailResp
 		defer cancel()
 		log.Println(roomdb.CreateTime)
 		return nil, RoomInforStruct{
-			RoomNo:       roomdb.RoomNo,
+			RoomNo:       roomNoo,
 			RoomPassword: pass,
+			RoomName:     CreateRoomDetailResponsePayload.RoomName,
 		}
 	}
 
@@ -538,50 +557,12 @@ func JoinRoomQueryHandler(JoinRoomDetailResponsePayload JoinRoomDetailResponsePa
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	var roomDB RoomDBstruct
 	count, err := collection.CountDocuments(ctx, bson.M{"roomNo": JoinRoomDetailResponsePayload.RoomNo})
-	cursor, queryError := collection.Find(ctx, bson.M{"roomNo": JoinRoomDetailResponsePayload.RoomNo})
-	tim := time.Now()
+
 	userId := GetUserByUsername(JoinRoomDetailResponsePayload.Username).ID
 	if err != nil {
 		return "", errors.New("Request failed to complete, we are working on it")
 	}
-	if count > 1 {
-
-		if queryError != nil {
-			return "", errors.New("Request failed to complete, we are working on it")
-		} else {
-			for cursor.Next(context.TODO()) {
-				var roomDB RoomDBstruct
-				err := cursor.Decode(&roomDB)
-				log.Println(tim.Sub(roomDB.CreateTime).Minutes())
-				if err == nil {
-					if tim.Sub(roomDB.CreateTime).Minutes() < 10 {
-						passwordisOkay := VerifyPassword(JoinRoomDetailResponsePayload.RoomPassword, roomDB.RoomPassword)
-						if passwordisOkay == nil {
-							s := strings.Split(roomDB.RoomMember, " ")
-							for _, val := range s {
-								if val == userId {
-									return "", errors.New("user has been the member of the group chat")
-								}
-							}
-							log.Println(roomDB.ID)
-							updateUserId := roomDB.RoomMember + " " + userId
-							log.Println(updateUserId)
-							collection.UpdateOne(ctx, bson.M{"createtime": roomDB.CreateTime}, bson.M{"$set": bson.M{"roommember": updateUserId}})
-
-							return "user joint the group chat", nil
-						} else {
-							return "", errors.New("Password isn't correct")
-						}
-					}
-
-				} else {
-					return "", errors.New("Request failed to complete, we are working on it")
-				}
-			}
-			return "", errors.New(JoinRoomDetailResponsePayload.RoomNo + "is not available")
-		}
-
-	} else if count == 0 {
+	if count == 0 {
 		return "", errors.New(JoinRoomDetailResponsePayload.RoomNo + "doesn't exist, please check it")
 	} else {
 		_ = collection.FindOne(ctx, bson.M{
@@ -589,25 +570,23 @@ func JoinRoomQueryHandler(JoinRoomDetailResponsePayload JoinRoomDetailResponsePa
 		}).Decode(&roomDB)
 		//log.Println(userId)
 		//log.Println(tim.Sub(roomDB.CreateTime).Minutes())
-		if tim.Sub(roomDB.CreateTime).Minutes() < 10 {
-			passwordisOkay := VerifyPassword(JoinRoomDetailResponsePayload.RoomPassword, roomDB.RoomPassword)
-			if passwordisOkay == nil {
-				s := strings.Split(roomDB.RoomMember, " ")
-				for _, val := range s {
-					if val == userId {
-						return "", errors.New("user has been the member of the group chat")
-					}
+
+		passwordisOkay := VerifyPassword(JoinRoomDetailResponsePayload.RoomPassword, roomDB.RoomPassword)
+		if passwordisOkay == nil {
+			s := strings.Split(roomDB.RoomMember, " ")
+			for _, val := range s {
+				if val == userId {
+					return "", errors.New("user has been the member of the group chat")
 				}
-				updateUserId := roomDB.RoomMember + " " + userId
-				log.Println(updateUserId)
-				collection.UpdateOne(ctx, bson.M{"roomNo": roomDB.RoomNo}, bson.M{"$set": bson.M{"roommember": updateUserId}})
-				return "user joint the group chat", nil
-			} else {
-				return "", errors.New("Password isn't correct")
 			}
+			updateUserId := roomDB.RoomMember + " " + userId
+			log.Println(updateUserId)
+			collection.UpdateOne(ctx, bson.M{"roomNo": roomDB.RoomNo}, bson.M{"$set": bson.M{"roommember": updateUserId}})
+			return "user joint the group chat", nil
 		} else {
-			return "", errors.New(JoinRoomDetailResponsePayload.RoomNo + "is not available")
+			return "", errors.New("Password isn't correct")
 		}
+
 	}
 	defer cancel()
 	return "", errors.New("Request failed to complete, we are working on it")

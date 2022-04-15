@@ -20,16 +20,15 @@ type ConversationStruct struct {
 	Message    string `json:"message"`
 	ToUserID   string `json:"toUserID"`
 	FromUserID string `json:"fromUserID"`
-	Image    string `json:"image"`
+	Image      string `json:"image"`
 }
 
 type BlindChattingStruct struct {
-
 	ID         string `json:"id" bson:"_id,omitempty"`
 	Message    string `json:"message"`
 	ToUserID   string `json:"toUserID"`
 	FromUserID string `json:"fromUserID"`
-	Image    string `json:"image"`
+	Image      string `json:"image"`
 }
 
 type BroadcastStruct struct {
@@ -79,32 +78,31 @@ type DriftBottlePayloadStruct struct {
 	Message    string `json:"message"`
 	Image      string `json:"image"`
 }
+
 // ImagePayloadStruct is a struct used for image Payload
 // Image size should be smaller than 4M, it is actually similar with message.
 // But we need to distinguish it from message. So that the front could know which kind of data need to be transfered into image formation
 type ImagePayloadStruct struct {
 	FromUserID string `json:"fromUserID"`
 	ToUserID   string `json:"toUserID"`
-	Image    string `json:"image"`
+	Image      string `json:"image"`
 }
-
-
 
 // MessagePayloadStruct is a struct used for message Payload
 type MessagePayloadStruct struct {
 	FromUserID string `json:"fromUserID"`
 	ToUserID   string `json:"toUserID"`
 	Message    string `json:"message"`
-    Image      string `json:"image"`
+	Image      string `json:"image"`
 }
 
 type CreateRoomDetailResponsePayloadStruct struct {
 	Username             string `json:"username"`
 	UserID               string `json:"userID"`
 	RoomNo               string `json:"roomNo"`
-	RoomID               string `json:"roomID"`
 	GenerateRoomPassword string `json:"generateRoomPassword"`
 	RoomPassword         string `json:"roomPassword"`
+	RoomName             string `json:"roomName"`
 }
 
 type JoinRoomDetailResponsePayloadStruct struct {
@@ -115,6 +113,7 @@ type JoinRoomDetailResponsePayloadStruct struct {
 type RoomInforStruct struct {
 	RoomNo       string `json:"roomNo"`
 	RoomPassword string `json:"roomPassword"`
+	RoomName     string `json:"roomName"`
 }
 type RoomDBstruct struct {
 	ID           string    `json:"id" bson:"_id,omitempty"`
@@ -123,4 +122,5 @@ type RoomDBstruct struct {
 	RoomPassword string    `json:"roomPassword"`
 	CreateTime   time.Time `json:"createtime"`
 	RoomMember   string    `json:"roommember"`
+	RoomName     string    `json:"roomName"`
 }

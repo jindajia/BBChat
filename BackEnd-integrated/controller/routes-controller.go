@@ -265,6 +265,7 @@ func GetBroadcastHandler(responseWriter http.ResponseWriter, request *http.Reque
 		ReturnResponse(responseWriter, request, response)
 	}
 }
+
 //GetMessagesHandler function will fetch the messages between two users
 func GetMessagesHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
@@ -339,37 +340,25 @@ func CreatRoom(responseWriter http.ResponseWriter, request *http.Request) {
 			}
 			ReturnResponse(responseWriter, request, response)
 		} else {
-			roomres, roomerror := RoomNoavailableQueryHandle(CreateRoomDetailResponsePayload)
-			if roomerror != nil {
+			roomcreateerror, RoomInfor := CreateRoomQueryHandler(CreateRoomDetailResponsePayload)
+			if roomcreateerror != nil {
 				response := APIResponseStruct{
 					Code:     http.StatusBadRequest,
 					Status:   http.StatusText(http.StatusBadRequest),
-					Message:  "",
-					Response: roomerror.Error(),
+					Message:  "Request failed to complete, we are working on it",
+					Response: nil,
 				}
 				ReturnResponse(responseWriter, request, response)
-			} else if roomres == "Yes" {
-				roomcreateerror, RoomInfor := CreateRoomQueryHandler(CreateRoomDetailResponsePayload)
-				if roomcreateerror != nil {
-					response := APIResponseStruct{
-						Code:     http.StatusBadRequest,
-						Status:   http.StatusText(http.StatusBadRequest),
-						Message:  "",
-						Response: roomcreateerror,
-					}
-					ReturnResponse(responseWriter, request, response)
-				} else {
-					response := APIResponseStruct{
-						Code:     http.StatusOK,
-						Status:   http.StatusText(http.StatusOK),
-						Message:  "You have created a chat room",
-						Response: RoomInfor,
-					}
-					ReturnResponse(responseWriter, request, response)
+			} else {
+				response := APIResponseStruct{
+					Code:     http.StatusOK,
+					Status:   http.StatusText(http.StatusOK),
+					Message:  "You have created a chat room",
+					Response: RoomInfor,
 				}
+				ReturnResponse(responseWriter, request, response)
 			}
 		}
-
 	}
 
 }

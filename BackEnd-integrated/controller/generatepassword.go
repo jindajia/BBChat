@@ -12,15 +12,6 @@ const (
 	SpecStr = "+=-@#~,.[]()!%^*$"
 )
 
-//检测字符串中的空格
-func test1() {
-	for i := 0; i < len(CharStr); i++ {
-		if CharStr[i] != ' ' {
-			fmt.Printf("%c", CharStr[i])
-		}
-	}
-}
-
 func generatePasswd() string {
 	//初始化密码切片
 	var passwd []byte = make([]byte, 10, 10)
@@ -36,6 +27,22 @@ func generatePasswd() string {
 	}
 	return string(passwd)
 }
+func generateroomno() string {
+	//初始化密码切片
+	var roomno []byte = make([]byte, 10, 10)
+	//源字符串
+	var sourceStr string
+	//判断字符类型,如果是数字
+
+	sourceStr = fmt.Sprintf("%s", NUmStr)
+
+	for i := 0; i < 8; i++ {
+		index := rand.Intn(len(sourceStr))
+		roomno[i] = sourceStr[index]
+	}
+
+	return string(roomno)
+}
 
 func generatepassword() string {
 	//随机种子
@@ -43,4 +50,12 @@ func generatepassword() string {
 	//test1()
 	passwd := generatePasswd()
 	return passwd
+}
+
+func generateroomnoo() string {
+	rand.Seed(time.Now().UnixNano())
+	//test1()
+	roomno := generateroomno()
+
+	return roomno
 }
