@@ -1,12 +1,11 @@
 package route
 
 import (
+	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
 	"private-chat/controller"
-
-	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 )
 
 // AddApproutes will add the routes for the application
@@ -29,9 +28,11 @@ func AddApproutes(route *mux.Router) {
 
 	route.HandleFunc("/getConversation/{toUserID}/{fromUserID}", handlers.GetMessagesHandler)
 
-    route.HandleFunc("/getBroadcast/{fromUserID}", controllers.GetBroadcastHandler)
+	route.HandleFunc("/getChatConversation/{toUserID}/{fromUserID}", handlers.GetMessagesHandler)
 
-    route.HandleFunc("/getDriftBottle/{toUserID}/{fromUserID}", controllers.GetDriftBottlesHandler)
+	route.HandleFunc("/getBroadcast/{fromUserID}", handlers.GetBroadcastHandler)
+
+	route.HandleFunc("/getDriftBottle/{toUserID}/{fromUserID}", handlers.GetDriftBottlesHandler)
 
 	route.HandleFunc("/CreateRoom", handlers.CreatRoom)
 
