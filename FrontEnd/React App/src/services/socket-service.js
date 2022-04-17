@@ -69,7 +69,16 @@ export function listenToWebSocketEvents() {
                     );
 
                     break;
-
+                case 'frinedslist-response':
+                    if (!socketPayload.eventPayload) {
+                        return
+                    }
+                    eventEmitter.emit(
+                        'frinedslist-response',
+                        socketPayload.eventPayload
+                    );
+    
+                        break;
                 case 'disconnect':
                     if (!socketPayload.eventPayload) {
                         return
