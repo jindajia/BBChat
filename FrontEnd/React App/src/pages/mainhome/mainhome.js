@@ -132,7 +132,9 @@ function Mainhome() {
                     <button className='btn-3d purple'>New Meeting</button>
                 </Link>
                 <button className='btn-3d cyan'>Join Meeting</button>
-                <button className='btn-3d yellow'>Friends</button>
+                <Link to={"/friend"}>
+                    <button className='btn-3d yellow'>Friends</button>
+                </Link>
             </div>
 
         </div>

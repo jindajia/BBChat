@@ -14,6 +14,7 @@ import Home from './pages/home/home';
 import FourOFour from './pages/four-o-four/four-o-four';
 import Groupchat from './pages/groupchat/groupchat'
 import CreateRoom from './pages/createRoom/createRoom'
+import Friend from './pages/friend/friend';
 function App() {
   return (
      <Router>
@@ -23,6 +24,7 @@ function App() {
           <Route path="/home/" component={Home} />
           <Route path="/createroom/" component={CreateRoom} />
           <Route path="/groupchat/" component={Groupchat} />
+          <Route path="/friend/" component={Friend} />
           <Route component={FourOFour} />
         </Switch>
       </Router>
