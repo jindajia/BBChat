@@ -1,9 +1,37 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+
 
 import './createRoom.css'
 
+
+function Navhome() {
+
+  return (
+    <div className='container'>
+      <div className='logo'></div>
+      <div className='nav'>
+        <nav>
+          <ul>
+            <Link to={"/#"}>
+              <li><button className='navbutton'>Home</button></li>
+            </Link>
+            <Link to={"/groupchat"}>
+              <li><button className='navbutton'>Chat</button></li>
+            </Link>
+            <Link to={"/authentication/registraion"}>
+              <li><button className='navbutton'>Register</button></li>
+            </Link>
+            <Link to={"/authentication/login"}>
+              <li><button className='navbutton'>Login</button></li>
+            </Link>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  );
+}
 
 function CreateRoom(props) {
 
@@ -20,21 +48,26 @@ function CreateRoom(props) {
 
 
   return (
-    <div className='create_container'>
-      <div className='create_1'>
-        <label>RoomNumber:</label>
+
+    <div>
+      <div>
+        <Navhome />
       </div>
-      <div className='create_2'>
-        <input onChange={handleRoomPasswordChange} />
-      </div>
-      <div className='create_1'>
-        <label>Roompassword:</label>
-      </div>
-      <div className='create_2'>
-        <input onChange={handleRoomPasswordChange} />
-      </div>
-      <div className='create_button'>
-        <button>CreateRoom</button>
+
+      <div>
+        <div className='create-room'>
+          <label className='label-style'>RoomName:</label>
+          <input className='input-style' onChange={handleroomNumberChange} />
+        </div>
+        <div className='create-password'>
+          <label className='label-style'>Roompassword:</label>
+          <input className='input-style' onChange={handleRoomPasswordChange} />
+          <button className='button-style1'>GENERATE PASSWORD</button>
+        </div>
+
+        <div className='create_button'>
+          <button className='button-style2'>CreateRoom</button>
+        </div>
       </div>
     </div>
   );
