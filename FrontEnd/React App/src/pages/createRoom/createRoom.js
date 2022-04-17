@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Link, withRouter } from 'react-router-dom';
-
+import { userCreateRoom } from "./../../services/api-service";
+import {
+  getItemInLS,
+  removeItemInLS,
+  setItemInLS
+} from "./../../services/storage-service";
 
 import './createRoom.css'
 
@@ -35,17 +40,44 @@ function Navhome() {
 
 function CreateRoom(props) {
 
-  const [roomnumber, updateRoomNumber] = useState(null);
-  const [roomPassword, updateRoomPassword] = useState(null);
+  const [roomName, updateRoomName] = useState("");
+  const [roomPassword, updateRoomPassword] = useState("");
+  const [createRoomMessage, updatecreateRoomMessage] = useState({});
+  const userDetails = getItemInLS('userDetails');
 
   const handleroomNumberChange = (event) => {
-    updateRoomNumber(event.target.value)
+    updateRoomName(event.target.value);
   }
 
   const handleRoomPasswordChange = (event) => {
-    updateRoomPassword(event.target.value)
+    updateRoomPassword(event.target.value);
+
   }
 
+  const createRoom = async () => {
+    // props.displayPageLoader(true);
+    createRoomMessage.username = userDetails.username;
+    createRoomMessage.userID = userDetails.userID;
+    createRoomMessage.roomNo = "1000";
+    if (roomPassword==null||roomPassword==""){
+      createRoomMessage.generateRoomPassword = "Yes";
+    } else {
+      createRoomMessage.generateRoomPassword = "No";
+    }
+    createRoomMessage.roomPassword = roomPassword;
+    createRoomMessage.roomName = roomName;
+    console.log(createRoomMessage);
+    const roomDetail = await userCreateRoom(createRoomMessage);
+    // props.displayPageLoader(false);
+
+    if (roomDetail.code === 200) {
+      setItemInLS('roomDetail', roomDetail.response)
+      console.log(roomDetail.response)
+    } else {
+      // setErrorMessage(roomDetail.message);
+      console.log(roomDetail.error)
+    }
+  };
 
   return (
 
@@ -66,7 +98,7 @@ function CreateRoom(props) {
         </div>
 
         <div className='create_button'>
-          <button className='button-style2'>CreateRoom</button>
+          <button className='button-style2' onClick={createRoom}>CreateRoom</button>
         </div>
       </div>
     </div>

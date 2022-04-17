@@ -47,9 +47,29 @@ export async function userSessionCheckHTTPRequest(username) {
     return await response.json();
 }
 
+export async function userCreateRoom(createRoomMessage) {
+    const response = await fetch(`${API_ENDPOINTS}/CreateRoom`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(createRoomMessage)
+    });
+    return await response.json();
+}
 
 export async function getConversationBetweenUsers(toUserID, fromUserID) {
     const response = await fetch(`${API_ENDPOINTS}/getConversation/${toUserID}/${fromUserID}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return await response.json();
+}
+
+export async function getConversationBetweenGroups(toUserID, groupID) {
+    const response = await fetch(`${API_ENDPOINTS}/getGroupConversation/${toUserID}/${groupID}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
