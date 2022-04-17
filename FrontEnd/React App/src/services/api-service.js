@@ -48,8 +48,8 @@ export async function userSessionCheckHTTPRequest(username) {
 }
 
 
-export async function getConversationBetweenUsers(fromUserID, toUserID) {
-    const response = await fetch(`${API_ENDPOINTS}/getConversation/${fromUserID}/${toUserID}`, {
+export async function getConversationBetweenUsers(toUserID, fromUserID) {
+    const response = await fetch(`${API_ENDPOINTS}/getConversation/${toUserID}/${fromUserID}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -58,8 +58,8 @@ export async function getConversationBetweenUsers(fromUserID, toUserID) {
     return await response.json();
 }
 
-export async function getConversationBetweenGroups(fromUserID, toUserID) {
-    const response = await fetch(`${API_ENDPOINTS}/getConversation/${fromUserID}/${toUserID}`, {
+export async function getConversationBetweenGroups(toUserID, fromUserID) {
+    const response = await fetch(`${API_ENDPOINTS}/getConversation/${toUserID}/${fromUserID}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
