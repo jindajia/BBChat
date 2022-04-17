@@ -58,8 +58,8 @@ export async function getConversationBetweenUsers(toUserID, fromUserID) {
     return await response.json();
 }
 
-export async function getConversationBetweenGroups(toUserID, fromUserID) {
-    const response = await fetch(`${API_ENDPOINTS}/getConversation/${toUserID}/${fromUserID}`, {
+export async function getConversationBetweenGroups(toUserID, groupID) {
+    const response = await fetch(`${API_ENDPOINTS}/getGroupConversation/${toUserID}/${groupID}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
