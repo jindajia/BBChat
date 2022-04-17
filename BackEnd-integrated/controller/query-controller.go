@@ -334,7 +334,34 @@ func GetConversationBetweenTwoUsers(toUserID string, fromUserID string) []Conver
 	return conversations
 }
 
+func GetRandomUserID(fromUserID string) string{
+    collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("users")
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    numOfUsers :=  collection.count()
+
+    string randUserID  =  fromUserID
+    var userDetails UserDetailsStruct
+
+    while(randUserID == fromUserID) {
+    		//Create a value into which the single document can be decoded
+    	randN := rand.Int63n(numOfUsers)
+        cursor, queryError := collection.Find(ctx, bson.M{}).skip(randN-1)
+        defer cancel()
+        if queryError != nil {
+                return queryError
+        }
+        err := cursor.Decode(&userDetails)
+
+        if err == nil {
+            randUserID = userDetails.ID
+        }
+    }
+
+    return randUserID
+}
+
 func GetBlindChattingBetweenTwoUsers(toUserID string, fromUserID string) []BlindChattingStruct {
+
 	var blindChattings []BlindChattingStruct
 
 	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("driftBottles")
