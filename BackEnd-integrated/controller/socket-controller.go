@@ -20,6 +20,7 @@ const (
 func unRegisterAndCloseConnection(c *Client) {
 	c.hub.unregister <- c
 	c.webSocketConnection.Close()
+	log.Printf("unRegisterAndCloseConnection")
 }
 
 func setSocketPayloadReadConfig(c *Client) {
@@ -381,15 +382,16 @@ func CreateNewSocketUser(hub *Hub, connection *websocket.Conn, userID string) {
 		userID:              userID,
 	}
 
+	client.hub.register <- client
 	go client.writePump()
 	go client.readPump()
 
-	client.hub.register <- client
 }
 
 // HandleUserRegisterEvent will handle the Join event for New socket users
 func HandleUserRegisterEvent(hub *Hub, client *Client) {
 	hub.clients[client] = true
+	UpdateUserOnlineStatusByUserID(client.userID, "Y")
 	handleSocketPayloadEvents(client, SocketEventStruct{
 		EventName:    "join",
 		EventPayload: client.userID,
