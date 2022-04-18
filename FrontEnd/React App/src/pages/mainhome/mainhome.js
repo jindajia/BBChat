@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment'
-import {getItemInLS} from "./../../services/storage-service";
+import { getItemInLS } from "./../../services/storage-service";
+import { Popover, Dropdown, ButtonToolbar, IconButton, Divider } from 'rsuite';
+import ArrowDownIcon from '@rsuite/icons/ArrowDown';
+import { Button, ButtonGroup, Whisper } from 'rsuite';
+
 
 import './mainhome.css'
 
@@ -82,6 +86,25 @@ const getUserName = (userDetails) => {
     return '___';
 };
 
+const renderMenu = ({ onClose, left, top, className }, ref) => {
+    const handleSelect = eventKey => {
+        onClose();
+        console.log(eventKey);
+    };
+    return (
+        <Popover ref={ref} className={className} style={{ left, top }} full>
+            <Dropdown.Menu onSelect={handleSelect}>
+                <Dropdown.Item>
+                    <p>Signed in as</p>
+                    <strong>foobar</strong>
+                </Dropdown.Item>
+                <Divider className='divider' />
+                <Dropdown.Item eventKey={1}>Sign out</Dropdown.Item>
+            </Dropdown.Menu>
+        </Popover>
+    );
+};
+
 
 function Navhome() {
 
@@ -99,6 +122,11 @@ function Navhome() {
                             <li><button className='navbutton'>Chat</button></li>
                         </Link>
                         <li><button className='button-53'>{getUserName(userDetails)}</button></li>
+                        <li>
+                            <Whisper trigger="click" speaker={renderMenu}>
+                                <IconButton className='icon-container' icon={<ArrowDownIcon />} />
+                            </Whisper>
+                        </li>
                     </ul>
                 </nav>
             </div>

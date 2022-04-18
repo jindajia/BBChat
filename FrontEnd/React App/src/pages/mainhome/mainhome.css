@@ -104,10 +104,9 @@
 }
 
 .nav {
-	/* float: right; */
 	position: absolute;
 	top: 0%;
-	right: 10%;
+	right: 15%;
 }
 
 ul {
@@ -336,4 +335,27 @@ button[class*="btn"] {
     padding: .75rem 3rem;
     font-size: 1.25rem;
   }
+}
+
+.dropdown-container{
+	
+	width: 160px;
+	position: relative;
+	top:20%;
+}
+
+.divider{
+	border-bottom: 1px solid #e0e0e0;
+	padding: 20px;
+}
+
+.icon-container{
+	width: 30px;
+	height: 60px;
+	
+}
+
+.buttongroup{
+	position: relative;
+	
 }
