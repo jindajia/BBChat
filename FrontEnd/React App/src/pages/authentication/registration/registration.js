@@ -18,6 +18,9 @@ function Registration(props) {
     updatePassword(event.target.value);
   }
 
+  const handleUsernameChange = async (event) => {
+    updateUsername(event.target.value);
+  }
   const handleKeyDownChange = (event) => {
     clearTimeout(typingTimer);
   }
@@ -30,15 +33,12 @@ function Registration(props) {
   }
 
   const checkIfUsernameAvailable = async (username) => {  
-    props.displayPageLoader(true);
     const isUsernameAvailableResponse = await isUsernameAvailableHTTPRequest(username);
-    props.displayPageLoader(false);
     if (!isUsernameAvailableResponse.response.isUsernameAvailable) {
       setErrorMessage(isUsernameAvailableResponse.message);
     } else {
       setErrorMessage(null);
     }
-    updateUsername(username);
   }
 
   const registerUser = async () => {
@@ -58,7 +58,7 @@ function Registration(props) {
     <div className="app__register-container">
        <div className="app__form-row">
         <label>Username:</label>
-        <input type="email" className="email" onKeyDown={handleKeyDownChange}  onKeyUp={handleKeyUpChange}/>
+        <input type="email" className="email" onChange={handleUsernameChange} onKeyDown={handleKeyDownChange}  onKeyUp={handleKeyUpChange}/>
       </div>
       <div className="app__form-row">
         <label>Password:</label>

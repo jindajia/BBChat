@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import { Link, withRouter } from 'react-router-dom';
 import { userCreateRoom } from "./../../services/api-service";
 import {
   getItemInLS,
-  removeItemInLS,
   setItemInLS
 } from "./../../services/storage-service";
 
@@ -76,7 +74,7 @@ function CreateRoom(props) {
     createRoomMessage.username = userDetails.username;
     createRoomMessage.userID = userDetails.userID;
     createRoomMessage.roomNo = "1000";
-    if (roomPassword==null||roomPassword==""){
+    if (roomPassword===null||roomPassword===""){
       createRoomMessage.generateRoomPassword = "Yes";
     } else {
       createRoomMessage.generateRoomPassword = "No";
