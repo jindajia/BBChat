@@ -315,11 +315,11 @@ func CreatRoom(responseWriter http.ResponseWriter, request *http.Request) {
 		}
 		ReturnResponse(responseWriter, request, response)
 	} else {
-		if CreateRoomDetailResponsePayload.RoomNo == "" {
+		if CreateRoomDetailResponsePayload.RoomName == "" {
 			response := APIResponseStruct{
 				Code:     http.StatusBadRequest,
 				Status:   http.StatusText(http.StatusBadRequest),
-				Message:  "RoomNo can't be empty.",
+				Message:  "RoomName can't be empty.",
 				Response: nil,
 			}
 			ReturnResponse(responseWriter, request, response)

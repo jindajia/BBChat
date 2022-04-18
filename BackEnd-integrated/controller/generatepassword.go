@@ -29,7 +29,7 @@ func generatePasswd() string {
 }
 func generateroomno() string {
 	//初始化密码切片
-	var roomno []byte = make([]byte, 10, 10)
+	var roomno []byte = make([]byte, 8, 8)
 	//源字符串
 	var sourceStr string
 	//判断字符类型,如果是数字

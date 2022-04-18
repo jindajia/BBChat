@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment'
-import { Navbar, Nav, Dropdown, Affix } from 'rsuite';
-
+import {getItemInLS} from "./../../services/storage-service";
 
 import './mainhome.css'
 
@@ -76,26 +75,30 @@ class Hottopic extends React.Component {
     }
 }
 
+const getUserName = (userDetails) => {
+    if (userDetails && userDetails.username) {
+        return userDetails.username;
+    }
+    return '___';
+};
+
+
 function Navhome() {
 
+    const userDetails = getItemInLS('userDetails');
     return (
         <div className='container'>
             <div className='logo'></div>
             <div className='nav'>
                 <nav>
                     <ul>
-                        <Link to={"/#"}>
+                        <Link to={"/mainhome"}>
                             <li><button className='navbutton'>Home</button></li>
                         </Link>
                         <Link to={"/groupchat"}>
                             <li><button className='navbutton'>Chat</button></li>
                         </Link>
-                        <Link to={"/authentication/registraion"}>
-                            <li><button className='navbutton'>Register</button></li>
-                        </Link>
-                        <Link to={"/authentication/login"}>
-                            <li><button className='navbutton'>Login</button></li>
-                        </Link>
+                        <li><button className='button-53'>{getUserName(userDetails)}</button></li>
                     </ul>
                 </nav>
             </div>
@@ -131,7 +134,9 @@ function Mainhome() {
                 <Link to={"/createRoom"}>
                     <button className='btn-3d purple'>New Meeting</button>
                 </Link>
-                <button className='btn-3d cyan'>Join Meeting</button>
+                <Link to={"/joinmeeting"}>
+                    <button className='btn-3d cyan'>Join Meeting</button>
+                </Link>
                 <Link to={"/friend"}>
                     <button className='btn-3d yellow'>Friends</button>
                 </Link>
