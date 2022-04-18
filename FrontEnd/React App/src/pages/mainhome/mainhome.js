@@ -101,7 +101,7 @@ const logoutUser = (props, userDetails) => {
     }
 };
 
-const renderMenu = ({ left, top, className }, ref, props) => {
+const renderMenu = ({ left, top, className }, ref, props, userDetails) => {
 
     return (
         <div className='dropdown-container'>
@@ -124,10 +124,19 @@ const renderMenu = ({ left, top, className }, ref, props) => {
     );
 };
 
-const userDetails = getItemInLS('userDetails');
 function Navhome(props) {
     const mainhomeprops = props.mainhomeprops;
+    const userDetails = getItemInLS('userDetails');
+    useEffect(() => {
 
+        (async () => {
+          if (userDetails === null || userDetails === '') {
+            console.log("user not log in");
+            mainhomeprops.history.push(`/authentication`);
+          }
+        })();
+    
+      }, [props, userDetails]);
     return (
         <div className='container'>
             <div className='logo'></div>
@@ -142,7 +151,7 @@ function Navhome(props) {
                         </Link>
                         <li><button className='button-53'>{getUserName(userDetails)}</button></li>
                         <li className='buttongroup'>
-                            <Whisper trigger="click" speaker={renderMenu({}, null,mainhomeprops)}>
+                            <Whisper trigger="click" speaker={renderMenu({}, null,mainhomeprops, userDetails)}>
                                 <IconButton className='icon-container' icon={<ArrowDownIcon />} />
                             </Whisper>
                         </li>
