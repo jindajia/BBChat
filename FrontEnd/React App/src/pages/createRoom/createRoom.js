@@ -81,7 +81,7 @@ function CreateRoom(props) {
     createRoomMessage.roomPassword = roomPassword;
     createRoomMessage.roomName = roomName;
     console.log(createRoomMessage);
-    const roomDetail = null;
+    var roomDetail = null;
     try{
       roomDetail = await userCreateRoom(createRoomMessage);
     } catch(err) {
