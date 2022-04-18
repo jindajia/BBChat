@@ -304,23 +304,29 @@ func (c *Client) readPump() {
 	// Setting up the Payload configuration
 	setSocketPayloadReadConfig(c)
 
+	c.webSocketConnection.SetReadLimit(512)
+	// Time allowed to read the next pong message from the peer.
+	const pongWait = 60 * time.Second
+	c.webSocketConnection.SetReadDeadline(time.Now().Add(pongWait))
+	c.webSocketConnection.SetPongHandler(func(string) error { c.webSocketConnection.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+
 	for {
 		// ReadMessage is a helper method for getting a reader using NextReader and reading from that reader to a buffer.
 		_, payload, err := c.webSocketConnection.ReadMessage()
-
-		decoder := json.NewDecoder(bytes.NewReader(payload))
-		decoderErr := decoder.Decode(&socketEventPayload)
-
-		if decoderErr != nil {
-			log.Printf("error: %v", decoderErr)
-			break
-		}
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error ===: %v", err)
 			}
 			break
+		} else {
+			decoder := json.NewDecoder(bytes.NewReader(payload))
+			decoderErr := decoder.Decode(&socketEventPayload)
+
+			if decoderErr != nil {
+				log.Printf("error: %v", decoderErr)
+				break
+			}
 		}
 
 		//  Getting the proper Payload to send the client
