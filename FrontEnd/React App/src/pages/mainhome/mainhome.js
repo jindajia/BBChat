@@ -94,10 +94,10 @@ const getUserName = (userDetails) => {
 };
 
 const logoutUser = (props, userDetails) => {
-    if (userDetails.userID) {
+    if (userDetails !==null && userDetails.userID) {
         removeItemInLS('userDetails');
         emitLogoutEvent(userDetails.userID);
-        props.history.push(`/`);
+        props.history.push('/');
     }
 };
 
@@ -125,8 +125,8 @@ const renderMenu = ({ left, top, className }, ref, props) => {
 };
 
 const userDetails = getItemInLS('userDetails');
-function Navhome() {
-
+function Navhome(props) {
+    const mainhomeprops = props.mainhomeprops;
 
     return (
         <div className='container'>
@@ -142,7 +142,7 @@ function Navhome() {
                         </Link>
                         <li><button className='button-53'>{getUserName(userDetails)}</button></li>
                         <li className='buttongroup'>
-                            <Whisper trigger="click" speaker={renderMenu}>
+                            <Whisper trigger="click" speaker={renderMenu({}, null,mainhomeprops)}>
                                 <IconButton className='icon-container' icon={<ArrowDownIcon />} />
                             </Whisper>
                         </li>
@@ -153,12 +153,12 @@ function Navhome() {
     );
 }
 
-function Mainhome() {
+function Mainhome(props) {
     return (
 
         <div>
             <div>
-                <Navhome />
+                <Navhome mainhomeprops={props}/>
             </div>
 
 
