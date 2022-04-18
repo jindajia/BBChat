@@ -42,7 +42,7 @@ function Authentication(props) {
           props.history.push(`/authentication`);
         } else {
           listenToWebSocketEvents()
-          props.history.push(`/`);
+          props.history.push(`/mainhome`);
         }
       }
     })();
