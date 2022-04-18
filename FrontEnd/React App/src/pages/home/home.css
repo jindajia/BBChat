@@ -61,6 +61,20 @@
     border-image: url('/border.png') 10 / 10px 10px 10px 10px / 5px 5px 5px 5px round;
 }
 
+.mainhome {
+    background: #fff;
+    padding: 2.5px 5px;
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+    border: 2px solid transparent;
+    -webkit-border-image: url('/border.png') 10 / 10px 10px 10px 10px / 5px 5px 5px 5px round;
+    /* Safari 3.1-5 */
+    -o-border-image: url('/border.png') 10 / 10px 10px 10px 10px / 5px 5px 5px 5px round;
+    /* Opera 11-12.1 */
+    border-image: url('/border.png') 10 / 10px 10px 10px 10px / 5px 5px 5px 5px round;
+}
+
 .app__content-container {
     display: flex;
     width: 100%;

@@ -64,7 +64,9 @@ const logoutUser = (props, userDetails) => {
   }
 };
 
-
+const backtoHome = (props) => {
+    props.history.push(`/mainhome`);
+};
 
 function Home(props) {
   const [userDetails, internalError] = useFetch(props);
@@ -85,6 +87,11 @@ function Home(props) {
             <h4>{getUserName(userDetails)}</h4>
           </div>
         </nav>
+        <button className='mainhome' href='#' onClick={ () => {
+          backtoHome(props);
+        }} >
+          Home
+        </button>
         <button className='logout' href='#' onClick={ () => {
           logoutUser(props, userDetails);
         }} >
