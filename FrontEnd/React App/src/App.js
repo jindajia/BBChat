@@ -21,8 +21,9 @@ function App() {
   return (
      <Router>
         <Switch>
-          <Route path="/" exact component={Mainhome} />
-          <Route path="/authentication" component={Authentication} />
+          <Route path="/" exact component={Authentication} />
+          {/* <Route path="/authentication" component={Authentication} /> */}
+          <Route path="/mainhome/" component={Mainhome} />
           <Route path="/home/" component={Home} />
           <Route path="/createroom/" component={CreateRoom} />
           <Route path="/groupchat/" component={Groupchat} />

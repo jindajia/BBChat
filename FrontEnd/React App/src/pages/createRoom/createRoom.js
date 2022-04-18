@@ -13,30 +13,33 @@ import {ReactNotifications, Store } from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 
 
+const getUserName = (userDetails) => {
+  if (userDetails && userDetails.username) {
+      return userDetails.username;
+  }
+  return '___';
+};
+
 function Navhome() {
 
+  const userDetails = getItemInLS('userDetails');
   return (
-    <div className='container'>
-      <div className='logo'></div>
-      <div className='nav'>
-        <nav>
-          <ul>
-            <Link to={"/#"}>
-              <li><button className='navbutton'>Home</button></li>
-            </Link>
-            <Link to={"/groupchat"}>
-              <li><button className='navbutton'>Chat</button></li>
-            </Link>
-            <Link to={"/authentication/registraion"}>
-              <li><button className='navbutton'>Register</button></li>
-            </Link>
-            <Link to={"/authentication/login"}>
-              <li><button className='navbutton'>Login</button></li>
-            </Link>
-          </ul>
-        </nav>
+      <div className='container'>
+          <div className='logo'></div>
+          <div className='nav'>
+              <nav>
+                  <ul>
+                      <Link to={"/mainhome"}>
+                          <li><button className='navbutton'>Home</button></li>
+                      </Link>
+                      <Link to={"/groupchat"}>
+                          <li><button className='navbutton'>Chat</button></li>
+                      </Link>
+                      <li><button className='button-53'>{getUserName(userDetails)}</button></li>
+                  </ul>
+              </nav>
+          </div>
       </div>
-    </div>
   );
 }
 

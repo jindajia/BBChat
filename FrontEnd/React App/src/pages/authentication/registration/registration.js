@@ -48,7 +48,7 @@ function Registration(props) {
 
     if (userDetails.code === 200) {
       setItemInLS('userDetails', userDetails.response)
-      props.history.push(`/home`)
+      props.history.push(`/mainhome`)
     } else {
       setErrorMessage(userDetails.message);
     }
