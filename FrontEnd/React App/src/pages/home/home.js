@@ -28,18 +28,11 @@ const useFetch = (props) => {
       if (userDetails === null || userDetails === '') {
         props.history.push(`/`);
       } else {
-        const isUserLoggedInResponse = await userSessionCheckHTTPRequest(
-          userDetails.userID
-        );
-        if (!isUserLoggedInResponse.response) {
-          props.history.push(`/`);
+        const webSocketConnection = connectToWebSocket(userDetails.userID);
+        if (webSocketConnection.webSocketConnection === null) {
+          setInternalError(webSocketConnection.message);
         } else {
-          const webSocketConnection = connectToWebSocket(userDetails.userID);
-          if (webSocketConnection.webSocketConnection === null) {
-            setInternalError(webSocketConnection.message);
-          } else {
-            listenToWebSocketEvents()
-          }
+          listenToWebSocketEvents()
         }
       }
     })();
