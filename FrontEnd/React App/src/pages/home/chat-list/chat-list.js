@@ -16,13 +16,20 @@ function ChatList(props) {
     if (socketPayload.type === 'new-user-joined') {
       const incomingChatList = socketPayload.chatlist;
       if (incomingChatList) {
-        newChatList = newChatList.filter(
-          (obj) => obj.userID !== incomingChatList.userID
+        const loggedInUserIndex = newChatList.findIndex(
+          (obj) => obj.userID === incomingChatList.userID
         );
+        if (loggedInUserIndex >= 0) {
+          newChatList[loggedInUserIndex].online = 'Y';
+        } else {
+          newChatList = newChatList.filter(
+            (obj) => obj.userID !== incomingChatList.userID
+          );
+          /* Adding new online user into chat list array */
+          newChatList = [...newChatList, ...[incomingChatList]];
+        }
       }
 
-      /* Adding new online user into chat list array */
-      newChatList = [...newChatList, ...[incomingChatList]];
     } else if (socketPayload.type === 'user-disconnected') {
       const outGoingUser = socketPayload.chatlist;
       const loggedOutUserIndex = newChatList.findIndex(
@@ -31,7 +38,7 @@ function ChatList(props) {
       if (loggedOutUserIndex >= 0) {
         newChatList[loggedOutUserIndex].online = 'N';
       }
-    } else {
+    } else if (socketPayload.type ==='my-chat-list'){
       newChatList = socketPayload.chatlist;
     }
 
