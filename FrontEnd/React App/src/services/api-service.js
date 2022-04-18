@@ -48,14 +48,18 @@ export async function userSessionCheckHTTPRequest(username) {
 }
 
 export async function userCreateRoom(createRoomMessage) {
-    const response = await fetch(`${API_ENDPOINTS}/CreateRoom`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(createRoomMessage)
-    });
-    return await response.json();
+    try {
+        const response = await fetch(`${API_ENDPOINTS}/CreateRoom`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(createRoomMessage)
+        });
+        return await response.json();
+    } catch(err) {
+    }
+
 }
 
 export async function getConversationBetweenUsers(toUserID, fromUserID) {
