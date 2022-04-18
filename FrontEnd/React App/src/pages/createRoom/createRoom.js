@@ -9,6 +9,8 @@ import {
 } from "./../../services/storage-service";
 
 import './createRoom.css'
+import {ReactNotifications, Store } from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
 
 
 function Navhome() {
@@ -43,6 +45,8 @@ function CreateRoom(props) {
   const [roomName, updateRoomName] = useState("");
   const [roomPassword, updateRoomPassword] = useState("");
   const [createRoomMessage, updatecreateRoomMessage] = useState({});
+  const [checked, setChecked] = React.useState(false);
+
   const userDetails = getItemInLS('userDetails');
 
   const handleroomNumberChange = (event) => {
@@ -53,6 +57,16 @@ function CreateRoom(props) {
     updateRoomPassword(event.target.value);
 
   }
+
+  const handleChange = () => {
+    setChecked(!checked);
+  };
+
+  useEffect(() => {
+    if (checked) {
+      updateRoomPassword('');
+    }
+  },[checked]);
 
   const createRoom = async () => {
     // props.displayPageLoader(true);
@@ -67,12 +81,45 @@ function CreateRoom(props) {
     createRoomMessage.roomPassword = roomPassword;
     createRoomMessage.roomName = roomName;
     console.log(createRoomMessage);
-    const roomDetail = await userCreateRoom(createRoomMessage);
+    const roomDetail = null;
+    try{
+      roomDetail = await userCreateRoom(createRoomMessage);
+    } catch(err) {
+      console.log(err);
+      Store.addNotification({
+        title: "Create Room Failed!",
+        message: "connection error",
+        type: "danger",
+        insert: "top",
+        container: "top-right",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
+    }
     // props.displayPageLoader(false);
 
-    if (roomDetail.code === 200) {
+    if (roomDetail===null){
+      console.log("Error");
+    } else if (roomDetail.code === 200) {
       setItemInLS('roomDetail', roomDetail.response)
       console.log(roomDetail.response)
+      Store.addNotification({
+        title: "Create Room Success!",
+        message: "Room: \"".concat(roomDetail.response.roomName, "\" create success!", " RoomNumber: ", roomDetail.response.roomNo ," Passowrd: ", roomDetail.response.roomPassword),
+        type: "success",
+        insert: "top",
+        container: "top-right",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     } else {
       // setErrorMessage(roomDetail.message);
       console.log(roomDetail.error)
@@ -87,14 +134,18 @@ function CreateRoom(props) {
       </div>
 
       <div>
+        <ReactNotifications />
         <div className='create-room'>
           <label className='label-style'>RoomName:</label>
-          <input className='input-style' onChange={handleroomNumberChange} />
+          <input className='input-style' value={roomName} onChange={handleroomNumberChange} />
         </div>
         <div className='create-password'>
           <label className='label-style'>Roompassword:</label>
-          <input className='input-style' onChange={handleRoomPasswordChange} />
-          <button className='button-style1'>GENERATE PASSWORD</button>
+          <input className='input-style' value={roomPassword} onChange={handleRoomPasswordChange} disabled={checked} />
+          <label className='checkboxlabel-style'>
+            <input className='checkbox-style' type="checkbox" checked={checked} onChange={handleChange} />
+            Random Password
+          </label>
         </div>
 
         <div className='create_button'>

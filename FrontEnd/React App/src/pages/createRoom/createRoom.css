@@ -23,6 +23,19 @@
     font-size: large;
 }
 
+.checkboxlabel-style {
+    position: relative;
+    left: 13%;
+    font-size: 24px;
+    font-family: 'Roboto';
+    font-weight: 700;
+}
+
+.checkbox-style {
+    position: relative;
+    right: 0.5%;
+}
+
 .create-password {
     left: 18%;
     top: 10%;
