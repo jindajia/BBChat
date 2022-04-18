@@ -131,7 +131,9 @@ function Mainhome() {
                 <Link to={"/createRoom"}>
                     <button className='btn-3d purple'>New Meeting</button>
                 </Link>
-                <button className='btn-3d cyan'>Join Meeting</button>
+                <Link to={"/joinmeeting"}>
+                    <button className='btn-3d cyan'>Join Meeting</button>
+                </Link>
                 <Link to={"/friend"}>
                     <button className='btn-3d yellow'>Friends</button>
                 </Link>
