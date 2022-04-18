@@ -2,8 +2,15 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment'
-import { getItemInLS } from "./../../services/storage-service";
-import { Popover, Dropdown, ButtonToolbar, IconButton, Divider } from 'rsuite';
+import {
+    connectToWebSocket,
+    listenToWebSocketEvents,
+    emitLogoutEvent,
+} from './../../services/socket-service';
+import {
+    getItemInLS,
+    removeItemInLS
+} from "./../../services/storage-service"; import { Popover, Dropdown, ButtonToolbar, IconButton, Divider } from 'rsuite';
 import ArrowDownIcon from '@rsuite/icons/ArrowDown';
 import { Button, ButtonGroup, Whisper } from 'rsuite';
 
@@ -86,29 +93,41 @@ const getUserName = (userDetails) => {
     return '___';
 };
 
-const renderMenu = ({ onClose, left, top, className }, ref) => {
-    const handleSelect = eventKey => {
-        onClose();
-        console.log(eventKey);
-    };
+const logoutUser = (props, userDetails) => {
+    if (userDetails.userID) {
+        removeItemInLS('userDetails');
+        emitLogoutEvent(userDetails.userID);
+        props.history.push(`/`);
+    }
+};
+
+const renderMenu = ({ left, top, className }, ref, props) => {
+
     return (
-        <Popover ref={ref} className={className} style={{ left, top }} full>
-            <Dropdown.Menu onSelect={handleSelect}>
-                <Dropdown.Item>
-                    <p>Signed in as</p>
-                    <strong>foobar</strong>
-                </Dropdown.Item>
-                <Divider className='divider' />
-                <Dropdown.Item eventKey={1}>Sign out</Dropdown.Item>
-            </Dropdown.Menu>
-        </Popover>
+        <div className='dropdown-container'>
+            <Popover ref={ref} className={className} style={{ left, top }} full>
+                <Dropdown.Menu >
+                    <Dropdown.Item>
+                        <p>Signed in as</p>
+                        <strong>{getUserName(userDetails)}</strong>
+                    </Dropdown.Item>
+                    <Divider className='divider' />
+                    <Dropdown.Item>
+                        <button className='logout' href='#' onClick={() => {
+                            logoutUser(props, userDetails);
+                        }} >Sign out
+                        </button>
+                    </Dropdown.Item>
+                </Dropdown.Menu>
+            </Popover>
+        </div>
     );
 };
 
-
+const userDetails = getItemInLS('userDetails');
 function Navhome() {
 
-    const userDetails = getItemInLS('userDetails');
+
     return (
         <div className='container'>
             <div className='logo'></div>
@@ -122,7 +141,7 @@ function Navhome() {
                             <li><button className='navbutton'>Chat</button></li>
                         </Link>
                         <li><button className='button-53'>{getUserName(userDetails)}</button></li>
-                        <li>
+                        <li className='buttongroup'>
                             <Whisper trigger="click" speaker={renderMenu}>
                                 <IconButton className='icon-container' icon={<ArrowDownIcon />} />
                             </Whisper>
