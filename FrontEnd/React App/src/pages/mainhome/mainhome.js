@@ -104,9 +104,9 @@ const logoutUser = (props, userDetails) => {
 const renderMenu = ({ left, top, className }, ref, props) => {
 
     return (
-        <div className='dropdown-container'>
+        <div >
             <Popover ref={ref} className={className} style={{ left, top }} full>
-                <Dropdown.Menu >
+                <Dropdown.Menu className='dropdown-container'>
                     <Dropdown.Item>
                         <p>Signed in as</p>
                         <strong>{getUserName(userDetails)}</strong>
