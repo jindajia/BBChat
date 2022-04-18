@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Tooltip, Whisper } from 'rsuite';
 import { Button, IconButton, ButtonGroup, ButtonToolbar } from 'rsuite';
 import { Input, InputGroup, MaskedInput } from 'rsuite';
-
+import { userSessionCheckHTTPRequest } from "./../../services/api-service";
+import {
+    connectToWebSocket,
+    listenToWebSocketEvents,
+    eventEmitter
+  } from './../../services/socket-service';
+import {
+    getItemInLS,
+    removeItemInLS
+  } from "./../../services/storage-service";
 import "./friend.css"
 
 
@@ -48,7 +56,39 @@ const tooltip2 = (
 );
 
 
-function Friend() {
+function Friend(props) {
+    const userDetails = getItemInLS('userDetails');
+    const [internalError, setInternalError] = useState(null);
+    const [friendList, setFriendList] = useState([]);
+
+    const friendListSubscription = (socketPayload) => {
+        let newFriendList = friendList;
+    
+    };
+    
+    useEffect(() => {
+        eventEmitter.on('frinedslist-response', friendListSubscription);
+        return () => {
+            eventEmitter.removeListener('frinedslist-response', friendListSubscription);
+        };
+    });
+    useEffect(() => {
+
+        (async () => {
+          if (userDetails === null || userDetails === '') {
+            console.log("userDetails is null");
+            // props.history.push(`/authentication`);
+          } else {
+            const webSocketConnection = connectToWebSocket(userDetails.userID);
+            if (webSocketConnection.webSocketConnection === null) {
+              setInternalError(webSocketConnection.message);
+            } else {
+              listenToWebSocketEvents()
+            }
+          }
+        })();
+    
+      }, [props, userDetails]);
     return (
         <div>
             <div>
