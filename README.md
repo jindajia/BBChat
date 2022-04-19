@@ -12,3 +12,7 @@ BBChat is a web-based social dating chat site. Like most communication software,
 - Kexin Zhang  -- GithubID: Cauchyxxx
 - Junge Xu  -- GithubID: Junge24
 
+## Link to Project Board for all Sprints
+https://github.com/jindajia/BBChat/projects
+
+
