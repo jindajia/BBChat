@@ -26,6 +26,18 @@ export function connectToWebSocket(userID) {
     }
 }
 
+export function sendWebSocketPayload(eventName, eventPayload) {
+    if (webSocketConnection === null) {
+        return;
+      }
+      webSocketConnection.send(
+        JSON.stringify({
+          eventName: eventName,
+          eventPayload: eventPayload
+        })
+      );
+}
+
 export function sendWebSocketMessage(messagePayload) {
     if (webSocketConnection === null) {
       return;

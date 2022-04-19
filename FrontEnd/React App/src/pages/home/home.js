@@ -6,10 +6,12 @@ import {
   connectToWebSocket,
   listenToWebSocketEvents,
   emitLogoutEvent,
+  sendWebSocketPayload,
 } from './../../services/socket-service';
 import {
   getItemInLS,
-  removeItemInLS
+  removeItemInLS,
+  setItemInLS
 } from "./../../services/storage-service";
 
 import ChatList from './chat-list/chat-list';
@@ -68,6 +70,10 @@ const backtoHome = (props) => {
     props.history.push(`/mainhome`);
 };
 
+const reloadchatlist = (userDetails) => {
+    console.log("reload");
+};
+
 function Home(props) {
   const [userDetails, internalError] = useFetch(props);
   const [selectedUser, updateSelectedUser] = useState(null);
@@ -87,6 +93,11 @@ function Home(props) {
             <h4>{getUserName(userDetails)}</h4>
           </div>
         </nav>
+        <button className='reloadchatlist' href='#' onClick={ () => {
+          reloadchatlist(userDetails);
+        }} >
+          Reload
+        </button>
         <button className='mainhome' href='#' onClick={ () => {
           backtoHome(props);
         }} >

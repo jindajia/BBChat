@@ -62,6 +62,21 @@ export async function userCreateRoom(createRoomMessage) {
 
 }
 
+export async function userJoinRoom(joinRoomMessage) {
+    try {
+        const response = await fetch(`${API_ENDPOINTS}/JoinRoom`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(joinRoomMessage)
+        });
+        return await response.json();
+    } catch(err) {
+    }
+
+}
+
 export async function getConversationBetweenUsers(toUserID, fromUserID) {
     const response = await fetch(`${API_ENDPOINTS}/getConversation/${toUserID}/${fromUserID}`, {
         method: 'GET',
