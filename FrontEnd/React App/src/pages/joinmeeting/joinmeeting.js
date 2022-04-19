@@ -45,11 +45,11 @@ function JoinMeeting() {
             <div>
                 <div className='number-container'>
                     <label className='label-style'>RoomNumber:</label>
-                    <input className='input-style' />
+                    <input id='roomnumber' className='input-style' />
                 </div>
                 <div className='password-container'>
                     <label className='label-style'>Roompassword:</label>
-                    <input className='input-style' />
+                    <input id='password' className='input-style' />
                 </div>
                 <div className='button-container'>
                     <button className='button-73'>JOIN</button>
