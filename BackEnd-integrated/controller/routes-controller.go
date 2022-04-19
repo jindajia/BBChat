@@ -179,31 +179,6 @@ func Registertation(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func GetRandomUser(responseWriter http.ResponseWriter, request *http.Request){
-    var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
-    	fromUserID := mux.Vars(request)["fromUserID"]
-
-    	if !IsAlphaNumeric(fromUserID) {
-    		response := APIResponseStruct{
-    			Code:     http.StatusBadRequest,
-    			Status:   http.StatusText(http.StatusBadRequest),
-    			Message:  "Username can't be empty.",
-    			Response: nil,
-    		}
-    		ReturnResponse(responseWriter, request, response)
-    	} else {
-    		newRandomUserID := GetRandomUserID(fromUserID)
-    		response := APIResponseStruct{
-    			Code:     http.StatusOK,
-    			Status:   http.StatusText(http.StatusOK),
-    			Message:  "Username is available.",
-    			Response: newRandomUserID,
-    		}
-    		ReturnResponse(responseWriter, request, response)
-    	}
-
-}
-
 //GetMessagesHandler function will fetch the messages between two users
 func GetDriftBottlesHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
@@ -228,6 +203,33 @@ func GetDriftBottlesHandler(responseWriter http.ResponseWriter, request *http.Re
 		}
 		ReturnResponse(responseWriter, request, response)
 	}
+}
+
+func GetChatMessagesHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	var IsAlphaNumeric = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9_-]*[A-Za-z0-9])?$`).MatchString
+	toChatID := mux.Vars(request)["toChatID"]
+	fromUserID := mux.Vars(request)["fromUserID"]
+	//log.Println(toChatID)
+	//log.Println(fromUserID)
+	if !IsAlphaNumeric(fromUserID) {
+		response := APIResponseStruct{
+			Code:     http.StatusBadRequest,
+			Status:   http.StatusText(http.StatusBadRequest),
+			Message:  "Username can't be empty.",
+			Response: nil,
+		}
+		ReturnResponse(responseWriter, request, response)
+	} else {
+		bottles := GetBlindChattingBetweenUsersAndRoom(toChatID, fromUserID)
+		response := APIResponseStruct{
+			Code:     http.StatusOK,
+			Status:   http.StatusText(http.StatusOK),
+			Message:  "Username is available.",
+			Response: bottles,
+		}
+		ReturnResponse(responseWriter, request, response)
+	}
+
 }
 
 //UserSessionCheck function will check login status of the user

@@ -20,7 +20,6 @@ const (
 func unRegisterAndCloseConnection(c *Client) {
 	c.hub.unregister <- c
 	c.webSocketConnection.Close()
-	log.Printf("unRegisterAndCloseConnection")
 }
 
 func setSocketPayloadReadConfig(c *Client) {
@@ -278,8 +277,10 @@ func handleSocketPayloadEvents(client *Client, socketEventPayload SocketEventStr
 				ToUserID:   toUserID,
 			}
 			roomstruct := ChatMemberList(toUserID)
+			log.Println(roomstruct.RoomMember)
 			StoreNewRoomChatMessages(messagePacket)
 			if roomstruct.RoomMember != "" {
+
 				reAddChatsMessage := SocketEventStruct{
 					EventName: "chatmessage-response",
 					EventPayload: MessagePayloadStruct{
@@ -303,7 +304,6 @@ func (c *Client) readPump() {
 
 	// Setting up the Payload configuration
 	setSocketPayloadReadConfig(c)
-
 	c.webSocketConnection.SetReadLimit(512)
 	// Time allowed to read the next pong message from the peer.
 	const pongWait = 60 * time.Second
@@ -387,7 +387,6 @@ func CreateNewSocketUser(hub *Hub, connection *websocket.Conn, userID string) {
 		send:                make(chan SocketEventStruct),
 		userID:              userID,
 	}
-
 	client.hub.register <- client
 	go client.writePump()
 	go client.readPump()

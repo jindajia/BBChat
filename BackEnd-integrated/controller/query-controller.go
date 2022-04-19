@@ -231,10 +231,11 @@ func StoreNewRoomChatMessages(messagePayload MessagePayloadStruct) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	tim := time.Now()
 	_, registrationError := collection.InsertOne(ctx, bson.M{
-		"fromUserID":  messagePayload.FromUserID,
-		"message":     messagePayload.Message,
-		"roomNo":      messagePayload.ToUserID,
-		"sendingtime": tim,
+		"fromUserID":   messagePayload.FromUserID,
+		"message":      messagePayload.Message,
+		"roomNo":       messagePayload.ToUserID,
+		"sending_time": tim,
+		"username":     GetUserByUserID(messagePayload.FromUserID).Username,
 	})
 	defer cancel()
 
@@ -351,33 +352,6 @@ func GetConversationBetweenTwoUsers(toUserID string, fromUserID string) []Conver
 	}
 	return conversations
 }
-
-func GetRandomUserID(fromUserID string) string{
-    collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("users")
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-    numOfUsers :=  collection.count()
-
-    string randUserID  =  fromUserID
-    var userDetails UserDetailsStruct
-
-    while(randUserID == fromUserID) {
-    		//Create a value into which the single document can be decoded
-    	randN := rand.Int63n(numOfUsers)
-        cursor, queryError := collection.Find(ctx, bson.M{}).skip(randN-1)
-        defer cancel()
-        if queryError != nil {
-                return queryError
-        }
-        err := cursor.Decode(&userDetails)
-
-        if err == nil {
-            randUserID = userDetails.ID
-        }
-    }
-
-    return randUserID
-}
-
 
 func GetBlindChattingBetweenTwoUsers(toUserID string, fromUserID string) []BlindChattingStruct {
 	var blindChattings []BlindChattingStruct
@@ -679,10 +653,52 @@ func UpdateFriendsList(messagePayload MessagePayloadStruct) error {
 }
 
 func ChatMemberList(roomId string) RoomDBstruct {
-	collection := db.MongoDBClient.Database("BBchattest").Collection("room")
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("room")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	log.Println(roomId)
 	var roomdbstruct RoomDBstruct
-	_ = collection.FindOne(ctx, bson.M{"_id": roomId}).Decode(&roomdbstruct)
+	_ = collection.FindOne(ctx, bson.M{"roomNo": roomId}).Decode(&roomdbstruct)
+	log.Println(roomdbstruct.ID)
 	defer cancel()
 	return roomdbstruct
+}
+
+func GetBlindChattingBetweenUsersAndRoom(toChatID string, fromUserID string) []RoomChattingStruct {
+	var blindChattings []RoomChattingStruct
+
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("chatmessages")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	queryCondition := bson.M{
+		"$or": []bson.M{
+
+			{
+				"roomNo": toChatID,
+			},
+		},
+	}
+
+	cursor, queryError := collection.Find(ctx, queryCondition)
+	defer cancel()
+
+	if queryError != nil {
+		return blindChattings
+	}
+
+	for cursor.Next(context.TODO()) {
+		//Create a value into which the single document can be decoded
+		var roomChatting RoomChattingStruct
+		err := cursor.Decode(&roomChatting)
+
+		if err == nil {
+			blindChattings = append(blindChattings, RoomChattingStruct{
+				FromUserID: roomChatting.FromUserID,
+				Message:    roomChatting.Message,
+				ID:         roomChatting.ID,
+				UserName:   roomChatting.UserName,
+			})
+		}
+	}
+	return blindChattings
+
 }
