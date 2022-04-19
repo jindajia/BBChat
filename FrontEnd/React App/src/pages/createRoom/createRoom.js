@@ -138,13 +138,13 @@ function CreateRoom(props) {
         <ReactNotifications />
         <div className='create-room'>
           <label className='label-style'>RoomName:</label>
-          <input className='input-style' value={roomName} onChange={handleroomNumberChange} />
+          <input id="roomname" className='input-style' value={roomName} onChange={handleroomNumberChange} />
         </div>
         <div className='create-password'>
           <label className='label-style'>Roompassword:</label>
-          <input className='input-style' value={roomPassword} onChange={handleRoomPasswordChange} disabled={checked} />
+          <input id="roompassword" className='input-style' value={roomPassword} onChange={handleRoomPasswordChange} disabled={checked} />
           <label className='checkboxlabel-style'>
-            <input className='checkbox-style' type="checkbox" checked={checked} onChange={handleChange} />
+            <input id='randompassword' className='checkbox-style' type="checkbox" checked={checked} onChange={handleChange} />
             Random Password
           </label>
         </div>

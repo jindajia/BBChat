@@ -31,6 +31,14 @@ type BlindChattingStruct struct {
 	Image      string `json:"image"`
 }
 
+type RoomChattingStruct struct {
+	Message    string    `json:"message"`
+	tim        time.Time `json:"sending_time"`
+	FromUserID string    `json:"fromUserID"`
+	ID         string    `json:"id" bson:"_id,omitempty"`
+	UserName   string    `json:"username"`
+}
+
 type BroadcastStruct struct {
 	ID         string `json:"id" bson:"_id,omitempty"`
 	Message    string `json:"message"`
