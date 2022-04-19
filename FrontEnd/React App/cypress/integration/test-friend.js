@@ -4,6 +4,7 @@ describe('friend page test', () => {
         cy.get('.email').type('lucas')
         cy.get('.password').type('123')
         cy.contains('LoginConfirm').click()
+        cy.contains('Friends').click()
     })
     it('Visit mainhome', () => {
         cy.contains('Home').click()
