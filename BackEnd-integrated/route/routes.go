@@ -32,6 +32,7 @@ func AddApproutes(route *mux.Router) {
 
 	route.HandleFunc("/getBroadcast/{fromUserID}", handlers.GetBroadcastHandler)
 
+    route.HandleFunc("/getRandomUser/{fromUserID}", handlers.GetRandomUser)
 	route.HandleFunc("/getDriftBottle/{toUserID}/{fromUserID}", handlers.GetDriftBottlesHandler)
 
 	route.HandleFunc("/CreateRoom", handlers.CreatRoom)
