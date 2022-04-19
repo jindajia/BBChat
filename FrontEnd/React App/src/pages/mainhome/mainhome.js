@@ -109,11 +109,11 @@ const renderMenu = ({ left, top, className }, ref, props, userDetails) => {
                 <Dropdown.Menu className='dropdown-container'>
                     <Dropdown.Item>
                         <p>Signed in as</p>
-                        <strong>{getUserName(userDetails)}</strong>
+                        <strong id='username'>{getUserName(userDetails)}</strong>
                     </Dropdown.Item>
                     <Divider className='divider' />
                     <Dropdown.Item>
-                        <button className='logout' href='#' onClick={() => {
+                        <button id='logout' className='logout' href='#' onClick={() => {
                             logoutUser(props, userDetails);
                         }} >Sign out
                         </button>
@@ -152,7 +152,7 @@ function Navhome(props) {
                         <li><button className='button-53'>{getUserName(userDetails)}</button></li>
                         <li className='buttongroup'>
                             <Whisper trigger="click" speaker={renderMenu({}, null,mainhomeprops, userDetails)}>
-                                <IconButton className='icon-container' icon={<ArrowDownIcon />} />
+                                <IconButton id='icon' className='icon-container' icon={<ArrowDownIcon />} />
                             </Whisper>
                         </li>
                     </ul>
