@@ -71,7 +71,7 @@ const backtoHome = (props) => {
 };
 
 const reloadchatlist = (userDetails) => {
-    console.log(reload);
+    console.log("reload");
 };
 
 function Home(props) {
