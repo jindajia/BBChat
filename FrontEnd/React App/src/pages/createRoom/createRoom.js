@@ -30,7 +30,7 @@ function Navhome() {
                       <Link to={"/mainhome"}>
                           <li><button className='navbutton'>Home</button></li>
                       </Link>
-                      <Link to={"/groupchat"}>
+                      <Link to={"/home"}>
                           <li><button className='navbutton'>Chat</button></li>
                       </Link>
                       <li><button className='button-53'>{getUserName(userDetails)}</button></li>
