@@ -37,7 +37,7 @@ https://github.com/jindajia/BBChat/blob/master/Sprint4/Sprint4.md
 https://github.com/jindajia/BBChat/blob/master/Sprint4/BackEnd_Funcs.md
 
 ## Demo video for Cypress test 
-https://user-images.githubusercontent.com/56080068/164336719-3ae16297-a92d-4912-8b10-8e11b403bf8a.mov
+https://user-images.githubusercontent.com/56080068/164340394-545c5e5b-0edf-4fcd-bddc-dbc03f3fa659.mp4
 
 ## Demo video for Backend Unit Test
 https://github.com/jindajia/BBChat/blob/master/Sprint4/BackEnd_UnitTest.mp4
