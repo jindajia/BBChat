@@ -444,3 +444,49 @@ func JoinRoom(responseWriter http.ResponseWriter, request *http.Request) {
 
 	}
 }
+
+func JoinHotRoom(responseWriter http.ResponseWriter, request *http.Request) {
+	var JoinHotRoomDetailResponsePayload JoinHotRoomDetailResponsePayloadStruct
+	decoder := json.NewDecoder(request.Body)
+	requestDecoderError := decoder.Decode(&JoinHotRoomDetailResponsePayload)
+	defer request.Body.Close()
+
+	if requestDecoderError != nil {
+		response := APIResponseStruct{
+			Code:     http.StatusBadRequest,
+			Status:   http.StatusText(http.StatusBadRequest),
+			Message:  "Request failed to complete, we are working on it",
+			Response: nil,
+		}
+		ReturnResponse(responseWriter, request, response)
+	} else if JoinHotRoomDetailResponsePayload.RoomNo == "" {
+		response := APIResponseStruct{
+			Code:     http.StatusBadRequest,
+			Status:   http.StatusText(http.StatusBadRequest),
+			Message:  "RoomNo can't be empty.",
+			Response: nil,
+		}
+		ReturnResponse(responseWriter, request, response)
+	} else {
+		joinres, err := JoinHotRoomQueryHandler(JoinHotRoomDetailResponsePayload)
+		if err != nil {
+			response := APIResponseStruct{
+				Code:     http.StatusBadRequest,
+				Status:   http.StatusText(http.StatusBadRequest),
+				Message:  JoinHotRoomDetailResponsePayload.Username + " cannot join the group chat room",
+				Response: err.Error(),
+			}
+			ReturnResponse(responseWriter, request, response)
+		} else {
+			response := APIResponseStruct{
+				Code:     http.StatusOK,
+				Status:   http.StatusText(http.StatusOK),
+				Message:  "user joint the hot group chat",
+				Response: joinres,
+			}
+			ReturnResponse(responseWriter, request, response)
+
+		}
+
+	}
+}
