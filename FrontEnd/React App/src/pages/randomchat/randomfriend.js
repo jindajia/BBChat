@@ -68,7 +68,7 @@ function Randomfriend(props) {
     );
   }
 
-  const randomfriendlist = ['RainDrop'];
+  const randomfriendlist = ['Raindrop'];
   
   return (
     <div className='app__chatlist-container'>
