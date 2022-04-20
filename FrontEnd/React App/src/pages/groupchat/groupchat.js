@@ -74,7 +74,9 @@ const reloadchatlist = (userDetails) => {
 
 function Groupchat(props) {
   const [userDetails, internalError] = useFetch(props);
-  const roomNumber = getItemInLS("chatRoomNo")
+  const roomNumber = getItemInLS("chatRoomNo");
+  const roomName = getItemInLS("chatRoomName");
+  const roomPassword = getItemInLS("chatRoomPass");
   if (internalError !== null) {
     return <h1>{internalError}</h1>;
   }
@@ -109,6 +111,10 @@ function Groupchat(props) {
       <div className='app__content-container'>
         <div className='app__groupchat-chatlist'>
           <label className='label-style'>RoomNumber: {roomNumber}</label>
+          <br/>
+          <label className='label-style'>RoomName: {roomName}</label>
+          <br/>
+          <label className='label-style'>Password: {roomPassword}</label>
         </div>
         <div className='app__groupchat-message'>
           <RoomConversation userDetails={userDetails} roomNumber={roomNumber} />

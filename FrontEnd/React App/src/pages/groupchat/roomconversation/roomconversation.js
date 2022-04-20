@@ -79,16 +79,9 @@ function RoomConversation(props) {
 
   useEffect(() => {
     const newMessageSubscription = (messagePayload) => {
-      if (
-        roomNumber !== null
-      ) {
-        var newconversation = []
-        roomconversation.filter(conversation => conversation.id !== messagePayload.id).map(filteredmessage => (
-            newconversation = [...newconversation, filteredmessage]
-        ))
-        updateroomconversation([...newconversation, messagePayload]);
-        scrollMessageContainer(messageContainer);
-      }
+      console.log(messagePayload);
+      updateroomconversation([...roomconversation, messagePayload]);
+      scrollMessageContainer(messageContainer);
     };
 
     eventEmitter.on('chatmessage-response', newMessageSubscription);
@@ -96,10 +89,7 @@ function RoomConversation(props) {
     return () => {
       eventEmitter.removeListener('chatmessage-response', newMessageSubscription);
     };
-  }, [
-    roomconversation,
-    roomNumber
-  ]);
+  });
 
   const sendMessage = (event) => {
     if (event.key === 'Enter') {
@@ -120,10 +110,10 @@ function RoomConversation(props) {
           message: message.trim(),
           toUserID: roomNumber,
         };
-        console.log("senwebsocketpayload ", messagePayload)
+        // console.log("senwebsocketpayload ", messagePayload)
         sendWebSocketPayload("room-chat", messagePayload);
         // updateroomconversation([...roomconversation, messagePayload]);
-        scrollMessageContainer(messageContainer);
+        // scrollMessageContainer(messageContainer);
       }
     }
   }
