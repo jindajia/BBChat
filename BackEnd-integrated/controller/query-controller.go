@@ -532,6 +532,7 @@ func CreateRoomQueryHandler(CreateRoomDetailResponsePayload CreateRoomDetailResp
 		"createtime":   ti,
 		"roommember":   CreateRoomDetailResponsePayload.UserID,
 		"roomName":     CreateRoomDetailResponsePayload.RoomName,
+		"flag":         "Yes",
 	})
 
 	createroomQueryObjectID, createroomQueryObjectIDError := createRoomQueryResponse.InsertedID.(primitive.ObjectID)
@@ -593,6 +594,40 @@ func JoinRoomQueryHandler(JoinRoomDetailResponsePayload JoinRoomDetailResponsePa
 	return "", errors.New("Request failed to complete, we are working on it")
 
 }
+
+func JoinHotRoomQueryHandler(JoinHotRoomDetailResponsePayload JoinHotRoomDetailResponsePayloadStruct) (string, error) {
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("room")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	var roomDB RoomDBstruct
+	count, err := collection.CountDocuments(ctx, bson.M{"roomName": JoinHotRoomDetailResponsePayload.RoomName})
+
+	userId := GetUserByUsername(JoinHotRoomDetailResponsePayload.Username).ID
+	if err != nil {
+		return "", errors.New("Request failed to complete, we are working on it")
+	}
+	if count == 0 {
+		return JoinHotRoomDetailResponsePayload.RoomNo + "doesn't exist, please check it", nil
+	} else {
+		_ = collection.FindOne(ctx, bson.M{
+			"roomNo": JoinHotRoomDetailResponsePayload.RoomNo,
+		}).Decode(&roomDB)
+		//log.Println(userId)
+		//log.Println(tim.Sub(roomDB.CreateTime).Minutes())
+		if roomDB.Flag == "Yes" {
+			return "This is not a hot topic room", nil
+		}
+
+		updateUserId := roomDB.RoomMember + " " + userId
+		log.Println(updateUserId)
+		collection.UpdateOne(ctx, bson.M{"roomNo": roomDB.RoomNo}, bson.M{"$set": bson.M{"roommember": updateUserId}})
+		return "user joint the group chat", nil
+
+	}
+	defer cancel()
+	return "", errors.New("Request failed to complete, we are working on it")
+
+}
+
 func CheckUser(userId string) bool {
 	collection := db.MongoDBClient.Database("BBchattest").Collection("user")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
