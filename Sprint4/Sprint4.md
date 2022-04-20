@@ -28,4 +28,4 @@ In sprint 4, we almost achieved what we expected for this project at the beginni
 - Join room and create room struct
 - message of group chatting struct
 - Join room and create API
-- fix websocket
+- Fix websocket
