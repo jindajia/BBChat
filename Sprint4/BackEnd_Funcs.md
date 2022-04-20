@@ -35,15 +35,17 @@ need input the room name and password
 A user can chat in a chatting room  with a group of users.
 Messages send by other group members will be delivered to everyone in the same room.
 
--broadcast
+- broadcast
 A user can send message in the public channel, so that every user in the app can see this message. 
 
--driftbottle
+- driftbottle
 A user can send message to a random user in this app. 
 This feature can be considered as the user throwing a drifting bottle in the sea of the whole system. 
 The random select process will be done by backend codes.
 
--image
+- image
 Users can send images in chatting. 
 Notes: The images sending from frontend to backend should be in binary format.
 
+- hot topic room
+We choose 10 hot topics to form a room, each users can join the room without password talking with other users.
