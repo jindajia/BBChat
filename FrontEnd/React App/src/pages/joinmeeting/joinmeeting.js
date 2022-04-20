@@ -80,7 +80,8 @@ function JoinMeeting(props) {
         // props.displayPageLoader(false);
     
         if (joinResponse.code===200){
-            setItemInLS('chatRoomNo', roomNumber)
+            setItemInLS('chatRoomNo', roomNumber);
+            setItemInLS('chatRoomPass', roomPassword);
             setTimeout(() => {props.history.push(`/groupchat`); }, 3000);
             console.log(joinResponse.response)
             Store.addNotification({

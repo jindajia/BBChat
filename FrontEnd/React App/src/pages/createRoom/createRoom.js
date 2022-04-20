@@ -106,7 +106,10 @@ function CreateRoom(props) {
     if (roomDetail===null){
       console.log("Error");
     } else if (roomDetail.code === 200) {
-      setItemInLS('roomDetail', roomDetail.response)
+      setItemInLS('chatRoomName', roomDetail.response.roomName);
+      setItemInLS('chatRoomNo', roomDetail.response.roomNo);
+      setItemInLS('chatRoomPass', roomDetail.response.roomPassword);
+      setTimeout(() => {props.history.push(`/groupchat`); }, 5000);
       console.log(roomDetail.response)
       Store.addNotification({
         title: "Create Room Success!",
