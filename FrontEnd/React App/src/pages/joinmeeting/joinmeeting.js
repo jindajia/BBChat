@@ -79,7 +79,7 @@ function JoinMeeting(props) {
         }
         // props.displayPageLoader(false);
     
-        if (joinResponse===200){
+        if (joinResponse.code===200){
             console.log(joinResponse.response)
             Store.addNotification({
               title: "Join Room Success!",
@@ -95,7 +95,7 @@ function JoinMeeting(props) {
               }
             });
         } else {
-          console.log(joinResponse.response)
+          console.log(joinResponse.code)
           Store.addNotification({
             title: "Join Room Failed!",
             message: joinResponse.response,
