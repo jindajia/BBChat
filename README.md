@@ -12,6 +12,19 @@ BBChat is a web-based social dating chat site. Like most communication software,
 - Kexin Zhang  -- GithubID: Cauchyxxx
 - Junge Xu  -- GithubID: Junge24
 
+## How to Run
+- Clone the repository from the github: https://github.com/jindajia/BBChat.git
+- Open terminal to run the backend server and then run the frontend
+### Backend
+- open terminal
+- cd BBChat/BackEnd-integrated
+- go run server.go
+
+### Frontend
+- open terminal
+- cd BBChat/FrontEnd/React\ App
+- npm install
+- npm start
 ## Link to Project Board for all Sprints
 https://github.com/jindajia/BBChat/projects
 
