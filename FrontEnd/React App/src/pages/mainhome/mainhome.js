@@ -168,10 +168,10 @@ function Navhome(props) {
     useEffect(() => {
 
         (async () => {
-            if (userDetails === null || userDetails === '') {
-                console.log("user not log in");
-                mainhomeprops.history.push(`/authentication`);
-            }
+          if (userDetails === null || userDetails === '') {
+            console.log("user not log in");
+            mainhomeprops.history.push(`/`);
+        }
         })();
 
     }, [props, userDetails]);

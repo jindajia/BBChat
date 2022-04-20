@@ -110,7 +110,13 @@ export function listenToWebSocketEvents() {
 
                     eventEmitter.emit('message-response', socketPayload.eventPayload);
                     break;
+                case 'chatmessage-response':
+                    if (!socketPayload.eventPayload) {
+                        return
+                    }
 
+                    eventEmitter.emit('chatmessage-response', socketPayload.eventPayload);
+                    break;
                 default:
                     break;
             }
