@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac8996a1-abd2-468b-8de8-07ed9a5dcce9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.idea/BBChat.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/BBChat.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Golang App.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/routes-controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/routes-controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/private-chat.exe" beforeDir="false" afterPath="$PROJECT_DIR$/private-chat.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/route/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/route/routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/route/routes_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/route/routes_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

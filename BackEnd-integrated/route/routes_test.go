@@ -173,9 +173,48 @@ type EventPayLoad struct {
 func TestWebSocket(t *testing.T) {
 
 	event := EventPayLoad{
+		FromUserID: "625f5e1587dbe1be871557f2",
+		ToUserID:   "625f586544c7dff685f96069",
+		Message:    "this is a test message from A to B",
+	}
+
+	stu := SocketEventStruct{
+		EventName:    "message",
+		EventPayload: event,
+	}
+
+	marshal, _ := json.Marshal(stu)
+	log.Println(string(marshal))
+	url := "ws://localhost:8000/ws/625f586544c7dff685f96069"
+	c, res, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		log.Fatal("connection failed:", err)
+	}
+	log.Printf("response:%s", fmt.Sprint(res))
+	defer c.Close()
+	done := make(chan struct{})
+	err = c.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for {
+		_, message, err := c.ReadMessage()
+		if err != nil {
+			log.Fatal(err)
+			break
+		}
+		log.Printf("Receive Message: %s", message)
+
+	}
+	<-done
+}
+
+func TestWebSocket(t *testing.T) {
+
+	event := EventPayLoad{
 		FromUserID: "625f586544c7dff685f96069",
 		ToUserID:   "625f5e1587dbe1be871557f2",
-		Message:    "I love",
+		Message:    "this is a test message from B to A",
 	}
 
 	stu := SocketEventStruct{
@@ -209,21 +248,25 @@ func TestWebSocket(t *testing.T) {
 	<-done
 }
 
+type BroadEventPayLoad struct {
+	FromUserID string `json:"fromUserID"`
+	Message    string `json:"message"`
+}
 func TestWebSocket(t *testing.T) {
 
-	event := EventPayLoad{
+	event := BroadEventPayLoad{
 		FromUserID: "625f586544c7dff685f96069",
 		Message:    "This is a broadcast test!",
 	}
 
 	stu := SocketEventStruct{
 		EventName:    "broadcast",
-		EventPayload: event,
+		BroadEventPayLoad: event,
 	}
 
 	marshal, _ := json.Marshal(stu)
 	log.Println(string(marshal))
-	url := "ws://localhost:8000/ws/625f5e1587dbe1be871557f2"
+	url := "ws://localhost:8000/ws/625f586544c7dff685f96069"
 	c, res, err := websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {
 		log.Fatal("connection failed:", err)
