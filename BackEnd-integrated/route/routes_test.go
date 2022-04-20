@@ -1,6 +1,10 @@
 package route
 
 import (
+	"encoding/json"
+	"fmt"
+	"github.com/gorilla/websocket"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"private-chat/controller"
@@ -90,9 +94,9 @@ func TestCreateroom(t *testing.T) {
 		expect string
 	}{
 
-		{"roomnoempty", `{"Username":"kkk","RoomNo":"","GenerateRoomPassword":"No","RoomPassword": ""}`, `{"code":400,"status":"Bad Request","message":"RoomNo can't be empty.","response":null}`},
-		{"generatepasswordempty", `{"Username":"kkk","RoomNo":"2345","GenerateRoomPassword":"","RoomPassword": ""}`, `{"code":400,"status":"Bad Request","message":"You need to decide whether generate password or not.","response":null}`},
-		{"Pawwordwrong", `{"Username":"kkk","RoomNo":"45","GenerateRoomPassword":"No","RoomPassword": ""}`, `{"code":400,"status":"Bad Request","message":"Password cannot be empty.","response":null}`},
+		{"roomnoempty", `{"Username":"kkk","RoomName":"","GenerateRoomPassword":"No","RoomPassword": ""}`, `{"code":400,"status":"Bad Request","message":"RoomName can't be empty.","response":null}`},
+		{"generatepasswordempty", `{"Username":"kkk","RoomName":"2345","GenerateRoomPassword":"","RoomPassword": ""}`, `{"code":400,"status":"Bad Request","message":"You need to decide whether generate password or not.","response":null}`},
+		{"Pawwordwrong", `{"Username":"kkk","RoomName":"45","GenerateRoomPassword":"No","RoomPassword": ""}`, `{"code":400,"status":"Bad Request","message":"Password cannot be empty.","response":null}`},
 	}
 	//json := strings.NewReader(`{"Username":"1"}`)
 	for _, tt := range tests {
@@ -153,4 +157,54 @@ func TestJoineroom(t *testing.T) {
 
 		})
 	}
+}
+
+type SocketEventStruct struct {
+	EventName    string      `json:"eventName"`
+	EventPayload interface{} `json:"eventPayload"`
+}
+
+type EventPayLoad struct {
+	FromUserID string `json:"fromUserID"`
+	ToUserID   string `json:"toUserID"`
+	Message    string `json:"message"`
+}
+
+func TestWebSocket(t *testing.T) {
+
+	event := EventPayLoad{
+		FromUserID: "625f586544c7dff685f96069",
+		ToUserID:   "625f5e1587dbe1be871557f2",
+		Message:    "I love",
+	}
+
+	stu := SocketEventStruct{
+		EventName:    "message",
+		EventPayload: event,
+	}
+
+	marshal, _ := json.Marshal(stu)
+	log.Println(string(marshal))
+	url := "ws://localhost:8000/ws/625f5e1587dbe1be871557f2"
+	c, res, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		log.Fatal("连接失败:", err)
+	}
+	log.Printf("响应:%s", fmt.Sprint(res))
+	defer c.Close()
+	done := make(chan struct{})
+	err = c.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for {
+		_, message, err := c.ReadMessage()
+		if err != nil {
+			log.Fatal(err)
+			break
+		}
+		log.Printf("收到消息: %s", message)
+
+	}
+	<-done
 }
