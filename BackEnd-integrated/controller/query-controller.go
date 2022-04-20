@@ -577,7 +577,7 @@ func JoinRoomQueryHandler(JoinRoomDetailResponsePayload JoinRoomDetailResponsePa
 			s := strings.Split(roomDB.RoomMember, " ")
 			for _, val := range s {
 				if val == userId {
-					return "", errors.New("user has been the member of the group chat")
+					return "user exist in the group chat", nil
 				}
 			}
 			updateUserId := roomDB.RoomMember + " " + userId
