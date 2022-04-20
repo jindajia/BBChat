@@ -13,6 +13,8 @@ import {
 } from "./../../services/storage-service"; import { Popover, Dropdown, ButtonToolbar, IconButton, Divider } from 'rsuite';
 import ArrowDownIcon from '@rsuite/icons/ArrowDown';
 import { Button, ButtonGroup, Whisper } from 'rsuite';
+import { Modal } from 'rsuite';
+
 
 
 import './mainhome.css'
@@ -94,12 +96,44 @@ const getUserName = (userDetails) => {
 };
 
 const logoutUser = (props, userDetails) => {
-    if (userDetails !==null && userDetails.userID) {
+    if (userDetails !== null && userDetails.userID) {
         removeItemInLS('userDetails');
         emitLogoutEvent(userDetails.userID);
         props.history.push('/');
     }
 };
+
+
+const AddFriendRequest = () => {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    return (
+        <div>
+            <ButtonToolbar>
+                <Button className='logout' href='#' onClick={handleOpen}> Add Friend Request</Button>
+            </ButtonToolbar>
+
+            <Modal className='modal-container' open={open} onClose={handleClose}>
+                <Modal.Header>
+                    <Modal.Title className='modaltitle'>Add Friend Request</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='modalbody'>
+                   <p>JD wants to add you as friend</p>
+                </Modal.Body>
+                <Modal.Footer className='modalfooter'>
+                    <Button className='button-24' onClick={handleClose} appearance="primary">
+                        Ok
+                    </Button>
+                    <Button className='button-12' onClick={handleClose} appearance="subtle">
+                        Cancel
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </div>
+    );
+};
+
 
 const renderMenu = ({ left, top, className }, ref, props, userDetails) => {
 
@@ -110,6 +144,10 @@ const renderMenu = ({ left, top, className }, ref, props, userDetails) => {
                     <Dropdown.Item>
                         <p>Signed in as</p>
                         <strong id='username'>{getUserName(userDetails)}</strong>
+                    </Dropdown.Item>
+                    <Divider className='divider' />
+                    <Dropdown.Item>
+                        <AddFriendRequest />
                     </Dropdown.Item>
                     <Divider className='divider' />
                     <Dropdown.Item>
@@ -130,13 +168,13 @@ function Navhome(props) {
     useEffect(() => {
 
         (async () => {
-          if (userDetails === null || userDetails === '') {
-            console.log("user not log in");
-            mainhomeprops.history.push(`/authentication`);
-          }
+            if (userDetails === null || userDetails === '') {
+                console.log("user not log in");
+                mainhomeprops.history.push(`/authentication`);
+            }
         })();
-    
-      }, [props, userDetails]);
+
+    }, [props, userDetails]);
     return (
         <div className='container'>
             <div className='logo'></div>
@@ -151,7 +189,7 @@ function Navhome(props) {
                         </Link>
                         <li><button className='button-53'>{getUserName(userDetails)}</button></li>
                         <li className='buttongroup'>
-                            <Whisper trigger="click" speaker={renderMenu({}, null,mainhomeprops, userDetails)}>
+                            <Whisper trigger="click" speaker={renderMenu({}, null, mainhomeprops, userDetails)}>
                                 <IconButton id='icon' className='icon-container' icon={<ArrowDownIcon />} />
                             </Whisper>
                         </li>
@@ -167,7 +205,7 @@ function Mainhome(props) {
 
         <div>
             <div>
-                <Navhome mainhomeprops={props}/>
+                <Navhome mainhomeprops={props} />
             </div>
 
 
