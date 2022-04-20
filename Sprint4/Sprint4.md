@@ -12,10 +12,20 @@ In sprint 4, we almost achieved what we expected for this project at the beginni
 - Completed the connection to backend for join group meeting function
 - Completed the connection to backend for create new meeting function
 
-# Backend
 ## fixed:
 - getRandomUser function
 
 ## new features:
 - add friend function
  
+ 
+# Backend
+- Completed the feature of getting the history of group chatting 
+- Updated the unit test
+- Completed the feature of random chatting
+
+## fixed:
+- Join room and create room struct
+- message of group chatting struct
+- Join room and create API
+- fix websocket
