@@ -21,13 +21,13 @@ func TestRegistertation(t *testing.T) {
 		param  string
 		expect string
 	}{
-		{"passwordempty", `{"Username": "liwenzhou"}`, `{"code":500,"status":"Internal Server Error","message":"Password can't be empty.","response":null}`},
-		{"usernameempty", `{"Password": "liwenzhou"}`, `{"code":400,"status":"Bad Request","message":"Username can't be empty.","response":null}`},
+		{"passwordempty", `{"Username": "kexinzhang"}`, `{"code":500,"status":"Internal Server Error","message":"Password can't be empty.","response":null}`},
+		{"usernameempty", `{"Password": "kexinzhang"}`, `{"code":400,"status":"Bad Request","message":"Username can't be empty.","response":null}`},
 	}
 	//json := strings.NewReader(`{"Username":"1"}`)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var req, err = http.NewRequest("POST", "/registration", strings.NewReader(tt.param))
+			var req, err = http.NewRequest("POST", "http://localhost:8000/registration", strings.NewReader(tt.param))
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -170,161 +170,135 @@ type EventPayLoad struct {
 	Message    string `json:"message"`
 }
 
-func TestWebSocket(t *testing.T) {
+func TestAddFriendsWebSocket(t *testing.T) {
 
 	event := EventPayLoad{
-		FromUserID: "625f5e1587dbe1be871557f2",
-		ToUserID:   "625f586544c7dff685f96069",
-		Message:    "this is a test message from A to B",
+		FromUserID: "6260503a1190410dbe5baba8",
+		ToUserID:   "626050421190410dbe5babaa",
+		Message:    "I love",
 	}
 
 	stu := SocketEventStruct{
-		EventName:    "message",
+		EventName:    "add_friends",
 		EventPayload: event,
 	}
 
-	marshal, _ := json.Marshal(stu)
-	log.Println(string(marshal))
-	url := "ws://localhost:8000/ws/625f586544c7dff685f96069"
-	c, res, err := websocket.DefaultDialer.Dial(url, nil)
-	if err != nil {
-		log.Fatal("connection failed:", err)
-	}
-	log.Printf("response:%s", fmt.Sprint(res))
-	defer c.Close()
-	done := make(chan struct{})
-	err = c.WriteMessage(websocket.TextMessage, marshal)
-	if err != nil {
-		fmt.Println(err)
-	}
-	for {
-		_, message, err := c.ReadMessage()
-		if err != nil {
-			log.Fatal(err)
-			break
-		}
-		log.Printf("Receive Message: %s", message)
-
-	}
-	<-done
-}
-
-func TestWebSocket(t *testing.T) {
-
-	event := EventPayLoad{
-		FromUserID: "625f586544c7dff685f96069",
-		ToUserID:   "625f5e1587dbe1be871557f2",
-		Message:    "this is a test message from B to A",
+	event1 := EventPayLoad{
+		ToUserID:   "626050421190410dbe5babaa",
+		FromUserID: "6260503a1190410dbe5baba8",
+		Message:    "Yes",
 	}
 
-	stu := SocketEventStruct{
+	stu1 := SocketEventStruct{
+		EventName:    "response_friends",
+		EventPayload: event1,
+	}
+	event2 := EventPayLoad{
+		FromUserID: "6260503a1190410dbe5baba8",
+		ToUserID:   "626050421190410dbe5babaa",
+		Message:    "I love u",
+	}
+
+	stu2 := SocketEventStruct{
 		EventName:    "message",
-		EventPayload: event,
+		EventPayload: event2,
+	}
+	event3 := EventPayLoad{
+		ToUserID:   "626050421190410dbe5babaa",
+		FromUserID: "6260503a1190410dbe5baba8",
+		Message:    "I love u too",
 	}
 
-	marshal, _ := json.Marshal(stu)
-	log.Println(string(marshal))
-	url := "ws://localhost:8000/ws/625f5e1587dbe1be871557f2"
-	c, res, err := websocket.DefaultDialer.Dial(url, nil)
-	if err != nil {
-		log.Fatal("connection failed:", err)
-	}
-	log.Printf("response:%s", fmt.Sprint(res))
-	defer c.Close()
-	done := make(chan struct{})
-	err = c.WriteMessage(websocket.TextMessage, marshal)
-	if err != nil {
-		fmt.Println(err)
-	}
-	for {
-		_, message, err := c.ReadMessage()
-		if err != nil {
-			log.Fatal(err)
-			break
-		}
-		log.Printf("Receive Message: %s", message)
-
-	}
-	<-done
-}
-
-type BroadEventPayLoad struct {
-	FromUserID string `json:"fromUserID"`
-	Message    string `json:"message"`
-}
-func TestWebSocket(t *testing.T) {
-
-	event := BroadEventPayLoad{
-		FromUserID: "625f586544c7dff685f96069",
-		Message:    "This is a broadcast test!",
+	stu3 := SocketEventStruct{
+		EventName:    "message",
+		EventPayload: event3,
 	}
 
-	stu := SocketEventStruct{
-		EventName:    "broadcast",
-		BroadEventPayLoad: event,
+	event4 := EventPayLoad{
+		FromUserID: "6260503a1190410dbe5baba8",
+		ToUserID:   "87071192",
+		Message:    "HI, I am Kexin Zhang",
 	}
 
-	marshal, _ := json.Marshal(stu)
-	log.Println(string(marshal))
-	url := "ws://localhost:8000/ws/625f586544c7dff685f96069"
-	c, res, err := websocket.DefaultDialer.Dial(url, nil)
-	if err != nil {
-		log.Fatal("connection failed:", err)
+	stu4 := SocketEventStruct{
+		EventName:    "room-chat",
+		EventPayload: event4,
 	}
-	log.Printf("response:%s", fmt.Sprint(res))
-	defer c.Close()
-	done := make(chan struct{})
-	err = c.WriteMessage(websocket.TextMessage, marshal)
-	if err != nil {
-		fmt.Println(err)
-	}
-	for {
-		_, message, err := c.ReadMessage()
-		if err != nil {
-			log.Fatal(err)
-			break
-		}
-		log.Printf("Receive Message: %s", message)
-
-	}
-	<-done
-}
-
-func TestWebSocket(t *testing.T) {
-
-	event := EventPayLoad{
-		FromUserID: "625f586544c7dff685f96069",
-		ToUserID:   "625f5e1587dbe1be871557f2",
-		Message:    "This is a driftBottle message",
+	event5 := EventPayLoad{
+		FromUserID: "626050421190410dbe5babaa",
+		ToUserID:   "87071192",
+		Message:    "Hi!!",
 	}
 
-	stu := SocketEventStruct{
+	stu5 := SocketEventStruct{
+		EventName:    "room-chat",
+		EventPayload: event5,
+	}
+
+	event6 := EventPayLoad{
+		ToUserID:   "6260504c1190410dbe5babac",
+		FromUserID: "6260503a1190410dbe5baba8",
+		Message:    "Hi",
+	}
+
+	stu6 := SocketEventStruct{
 		EventName:    "driftBottle",
-		EventPayload: event,
+		EventPayload: event6,
 	}
-
-	marshal, _ := json.Marshal(stu)
-	log.Println(string(marshal))
-	url := "ws://localhost:8000/ws/625f5e1587dbe1be871557f2"
+	url := "ws://localhost:8000/ws/6260503a1190410dbe5baba8"
+	url2 := "ws://localhost:8000/ws/626050421190410dbe5babaa"
+	url3 := "ws://localhost:8000/ws/6260504c1190410dbe5babac"
 	c, res, err := websocket.DefaultDialer.Dial(url, nil)
+	w, ress, error := websocket.DefaultDialer.Dial(url2, nil)
+	r, resss, _ := websocket.DefaultDialer.Dial(url3, nil)
 	if err != nil {
-		log.Fatal("connection failed:", err)
+		log.Fatal("Connect error:", err)
 	}
-	log.Printf("response:%s", fmt.Sprint(res))
+	if error != nil {
+		log.Fatal("Connect error:", error)
+	}
+	log.Printf("Reponse:%s", fmt.Sprint(res))
+	log.Printf("Reponse:%s", fmt.Sprint(ress))
+	log.Printf("Reponse:%s", fmt.Sprint(resss))
 	defer c.Close()
+	defer w.Close()
+	defer r.Close()
 	done := make(chan struct{})
+	marshal, _ := json.Marshal(stu)
 	err = c.WriteMessage(websocket.TextMessage, marshal)
+	marshal1, _ := json.Marshal(stu1)
+	error = w.WriteMessage(websocket.TextMessage, marshal1)
+	marshal2, _ := json.Marshal(stu2)
+	err = c.WriteMessage(websocket.TextMessage, marshal2)
+	marshal3, _ := json.Marshal(stu3)
+	error = w.WriteMessage(websocket.TextMessage, marshal3)
+	marshal4, _ := json.Marshal(stu4)
+	err = c.WriteMessage(websocket.TextMessage, marshal4)
+	marshal5, _ := json.Marshal(stu5)
+	error = w.WriteMessage(websocket.TextMessage, marshal5)
+	marshal6, _ := json.Marshal(stu6)
+	error = r.WriteMessage(websocket.TextMessage, marshal6)
 	if err != nil {
 		fmt.Println(err)
 	}
+	if error != nil {
+		fmt.Println(error)
+	}
 	for {
-		_, message, err := c.ReadMessage()
+		_, message, err := w.ReadMessage()
+		_, mess, error := c.ReadMessage()
+		_, mes, _ := r.ReadMessage()
 		if err != nil {
 			log.Fatal(err)
 			break
 		}
-		log.Printf("Receive Message: %s", message)
+		if error != nil {
+			log.Fatal(err)
+			break
+		}
+		log.Printf("Received message from user1: %s", message)
+		log.Printf("Received message from user2: %s", mess)
+		log.Printf("Received message from user3: %s", mes)
 	}
 	<-done
 }
-
