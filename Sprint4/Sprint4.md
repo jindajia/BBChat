@@ -11,6 +11,7 @@ In sprint 4, we almost achieved what we expected for this project at the beginni
 - Completed the connection to backend for add friend function
 - Completed the connection to backend for join group meeting function
 - Completed the connection to backend for create new meeting function
+- More Cypress test completed
 
 ## fixed:
 - getRandomUser function

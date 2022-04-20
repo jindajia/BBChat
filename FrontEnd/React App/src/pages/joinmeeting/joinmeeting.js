@@ -124,11 +124,11 @@ function JoinMeeting(props) {
                 <ReactNotifications />
                 <div className='number-container'>
                     <label className='label-style'>RoomNumber:</label>
-                    <input className='input-style' value={roomNumber} onChange={handleroomNumberChange} />
+                    <input id='roomnumber' className='input-style' value={roomNumber} onChange={handleroomNumberChange} />
                 </div>
                 <div className='password-container'>
                     <label className='label-style'>Roompassword:</label>
-                    <input className='input-style' value={roomPassword} onChange={handleRoomPasswordChange}/>
+                    <input id='password' className='input-style' value={roomPassword} onChange={handleRoomPasswordChange}/>
                 </div>
                 <div className='button-container'>
                     <button className='button-73' onClick={joinRoom}>JOIN</button>
