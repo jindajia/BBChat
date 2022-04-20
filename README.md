@@ -34,6 +34,9 @@ https://github.com/jindajia/BBChat/projects
 https://github.com/jindajia/BBChat/blob/master/Sprint4/Sprint4.md
 
 ## Link to API documentation
+https://github.com/jindajia/BBChat/blob/master/Sprint4/APIDoc.md
+
+## Features we have done for the backend in this project
 https://github.com/jindajia/BBChat/blob/master/Sprint4/BackEnd_Funcs.md
 
 ## Demo video for Cypress test 
