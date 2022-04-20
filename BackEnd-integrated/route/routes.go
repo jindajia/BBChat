@@ -40,6 +40,8 @@ func AddApproutes(route *mux.Router) {
 
 	route.HandleFunc("/JoinRoom", handlers.JoinRoom)
 
+	route.HandleFunc("/JoinHotRoom", handlers.JoinHotRoom)
+
 	route.HandleFunc("/ws/{userID}", func(responseWriter http.ResponseWriter, request *http.Request) {
 		var upgrader = websocket.Upgrader{
 			ReadBufferSize:  1024,
