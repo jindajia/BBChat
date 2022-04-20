@@ -188,9 +188,9 @@ func TestWebSocket(t *testing.T) {
 	url := "ws://localhost:8000/ws/625f5e1587dbe1be871557f2"
 	c, res, err := websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {
-		log.Fatal("连接失败:", err)
+		log.Fatal("connection failed:", err)
 	}
-	log.Printf("响应:%s", fmt.Sprint(res))
+	log.Printf("response:%s", fmt.Sprint(res))
 	defer c.Close()
 	done := make(chan struct{})
 	err = c.WriteMessage(websocket.TextMessage, marshal)
@@ -203,8 +203,85 @@ func TestWebSocket(t *testing.T) {
 			log.Fatal(err)
 			break
 		}
-		log.Printf("收到消息: %s", message)
+		log.Printf("Receive Message: %s", message)
 
 	}
 	<-done
 }
+
+func TestWebSocket(t *testing.T) {
+
+	event := EventPayLoad{
+		FromUserID: "625f586544c7dff685f96069",
+		Message:    "This is a broadcast test!",
+	}
+
+	stu := SocketEventStruct{
+		EventName:    "broadcast",
+		EventPayload: event,
+	}
+
+	marshal, _ := json.Marshal(stu)
+	log.Println(string(marshal))
+	url := "ws://localhost:8000/ws/625f5e1587dbe1be871557f2"
+	c, res, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		log.Fatal("connection failed:", err)
+	}
+	log.Printf("response:%s", fmt.Sprint(res))
+	defer c.Close()
+	done := make(chan struct{})
+	err = c.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for {
+		_, message, err := c.ReadMessage()
+		if err != nil {
+			log.Fatal(err)
+			break
+		}
+		log.Printf("Receive Message: %s", message)
+
+	}
+	<-done
+}
+
+func TestWebSocket(t *testing.T) {
+
+	event := EventPayLoad{
+		FromUserID: "625f586544c7dff685f96069",
+		ToUserID:   "625f5e1587dbe1be871557f2",
+		Message:    "This is a driftBottle message",
+	}
+
+	stu := SocketEventStruct{
+		EventName:    "driftBottle",
+		EventPayload: event,
+	}
+
+	marshal, _ := json.Marshal(stu)
+	log.Println(string(marshal))
+	url := "ws://localhost:8000/ws/625f5e1587dbe1be871557f2"
+	c, res, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		log.Fatal("connection failed:", err)
+	}
+	log.Printf("response:%s", fmt.Sprint(res))
+	defer c.Close()
+	done := make(chan struct{})
+	err = c.WriteMessage(websocket.TextMessage, marshal)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for {
+		_, message, err := c.ReadMessage()
+		if err != nil {
+			log.Fatal(err)
+			break
+		}
+		log.Printf("Receive Message: %s", message)
+	}
+	<-done
+}
+
