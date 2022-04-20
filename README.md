@@ -32,6 +32,6 @@ https://github.com/jindajia/BBChat/projects
 
 ## Link to Sprint4 deliverables
 https://github.com/jindajia/BBChat/blob/master/Sprint4/Sprint4.md
-![](../Sprint4/Cypress test.mov)
+![](./Sprint4/Cypress test.mov)
 ## Link to API documentation
 https://github.com/jindajia/BBChat/blob/master/Sprint4/BackEnd_Funcs.md
