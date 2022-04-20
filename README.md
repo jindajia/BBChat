@@ -18,8 +18,10 @@ BBChat is a web-based social dating chat site. Like most communication software,
 ### Backend
 - open terminal
 - cd BBChat/BackEnd-integrated
+- go build
 - go run server.go
-
+- notes: if there are warnings or errors about can't find git root ...., please delete the .idea folder and reDo the go build and go run server.go steps.
+- Database: we use mongoDB as the database for our project. When you running this project in local, make sure the database has been started up and connected properly.
 ### Frontend
 - open terminal
 - cd BBChat/FrontEnd/React\ App
