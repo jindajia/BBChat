@@ -131,4 +131,10 @@ type RoomDBstruct struct {
 	CreateTime   time.Time `json:"createtime"`
 	RoomMember   string    `json:"roommember"`
 	RoomName     string    `json:"roomName"`
+	Flag         string    `json:"flag"`
+}
+type JoinHotRoomDetailResponsePayloadStruct struct {
+	Username string `json:"username"`
+	RoomNo   string `json:"roomNo"`
+	RoomName string `json:"roomName"`
 }

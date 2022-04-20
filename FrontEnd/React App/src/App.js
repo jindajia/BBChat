@@ -16,6 +16,7 @@ import Groupchat from './pages/groupchat/groupchat'
 import CreateRoom from './pages/createRoom/createRoom'
 import Friend from './pages/friend/friend';
 import JoinMeeting from './pages/joinmeeting/joinmeeting';
+import Randomchat from './pages/randomchat/randomchat';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/groupchat/" component={Groupchat} />
           <Route path="/friend/" component={Friend} />
           <Route path="/joinmeeting/" component={JoinMeeting} />
+          <Route path="/randomchat/" component={Randomchat} />
           <Route component={FourOFour} />
         </Switch>
       </Router>

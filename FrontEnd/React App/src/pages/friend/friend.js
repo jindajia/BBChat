@@ -8,11 +8,11 @@ import {
     connectToWebSocket,
     listenToWebSocketEvents,
     eventEmitter
-  } from './../../services/socket-service';
+} from './../../services/socket-service';
 import {
     getItemInLS,
     removeItemInLS
-  } from "./../../services/storage-service";
+} from "./../../services/storage-service";
 
 import "./friend.css"
 
@@ -67,9 +67,9 @@ function Friend(props) {
 
     const friendListSubscription = (socketPayload) => {
         let newFriendList = friendList;
-    
+
     };
-    
+
     useEffect(() => {
         eventEmitter.on('frinedslist-response', friendListSubscription);
         return () => {
@@ -79,20 +79,20 @@ function Friend(props) {
     useEffect(() => {
 
         (async () => {
-          if (userDetails === null || userDetails === '') {
-            console.log("userDetails is null");
-            // props.history.push(`/authentication`);
-          } else {
-            const webSocketConnection = connectToWebSocket(userDetails.userID);
-            if (webSocketConnection.webSocketConnection === null) {
-              setInternalError(webSocketConnection.message);
+            if (userDetails === null || userDetails === '') {
+                console.log("userDetails is null");
+                // props.history.push(`/authentication`);
             } else {
-              listenToWebSocketEvents()
+                const webSocketConnection = connectToWebSocket(userDetails.userID);
+                if (webSocketConnection.webSocketConnection === null) {
+                    setInternalError(webSocketConnection.message);
+                } else {
+                    listenToWebSocketEvents()
+                }
             }
-          }
         })();
-    
-      }, [props, userDetails]);
+
+    }, [props, userDetails]);
     return (
         <div>
             <div>
@@ -114,7 +114,9 @@ function Friend(props) {
 
             <div className='random-container'>
                 <Whisper placement='right' controlId="control-id-hover" trigger="hover" speaker={tooltip2}>
-                    <Button className='button-85'>Random Chat</Button>
+                    <Link to="./randomchat">
+                        <Button className='button-85'>Random Chat</Button>
+                    </Link>
                 </Whisper>
 
             </div>
