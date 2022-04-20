@@ -30,4 +30,5 @@ BBChat is a web-based social dating chat site. Like most communication software,
 ## Link to Project Board for all Sprints
 https://github.com/jindajia/BBChat/projects
 
-
+## Link to Sprint4 deliverables
+https://github.com/jindajia/BBChat/blob/master/Sprint4/Sprint4.md
