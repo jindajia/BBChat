@@ -4,14 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"golang.org/x/crypto/bcrypt"
 	"log"
+	"math/rand"
 	"os"
 	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
 
 	db "private-chat/database"
 )
@@ -351,6 +352,43 @@ func GetConversationBetweenTwoUsers(toUserID string, fromUserID string) []Conver
 		}
 	}
 	return conversations
+}
+
+func GetRandomUserID(fromUserID string) string {
+	collection := db.MongoDBClient.Database(os.Getenv("MONGODB_DATABASE")).Collection("users")
+	_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	numOfUsers, estCountErr := collection.EstimatedDocumentCount(context.TODO())
+	if estCountErr == nil {
+		log.Fatal(estCountErr)
+	}
+	var users []UserDetailsStruct
+
+	cur, err := collection.Find(context.TODO(), bson.D{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cancel()
+	for cur.Next(context.TODO()) {
+		//Create a value into which the single document can be decoded
+		var userDetails UserDetailsStruct
+		err := cur.Decode(&userDetails)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		users = append(users, userDetails)
+	}
+	randUserID := fromUserID
+	for {
+		randN := rand.Int63n(numOfUsers)
+		randUserID := users[randN].ID
+		if randUserID != fromUserID {
+			break
+		}
+
+	}
+
+	return randUserID
 }
 
 func GetBlindChattingBetweenTwoUsers(toUserID string, fromUserID string) []BlindChattingStruct {
