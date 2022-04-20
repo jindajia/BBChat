@@ -9,7 +9,7 @@ import './roomconversation.css'
 
 const alignMessages = (userDetails, toUserID) => {
   const { userID } = userDetails;
-  return userID !== toUserID;
+  return userID === toUserID;
 }
 
 const scrollMessageContainer = (messageContainer) => {
@@ -30,7 +30,7 @@ const getMessageUI = (messageContainer, userDetails, roomconversations) => {
       {roomconversations.map((roomconversation, index) => (
         <li
           className={`message ${
-            alignMessages(userDetails, roomconversation.toUserID) ? 'align-right' : ''
+            alignMessages(userDetails, roomconversation.fromUserID) ? 'align-right' : ''
           }`}
           key={index}
         >
@@ -72,6 +72,7 @@ function RoomConversation(props) {
         } else if (roomconversationsResponse.response === null) {
           updateroomconversation([]);
         }
+        scrollMessageContainer(messageContainer);
       })();
     }
   }, [userDetails, roomNumber])
