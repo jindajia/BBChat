@@ -13,7 +13,7 @@ import {
 } from "./../../services/storage-service";
 
 import ChatList from '../home/chat-list/chat-list';
-import Conversation from '../home/conversation/conversation';
+import RoomConversation from '../groupchat/roomconversation/roomconversation';
 
 import './groupchat.css';
 
@@ -26,20 +26,13 @@ const useFetch = (props) => {
 
     (async () => {
       if (userDetails === null || userDetails === '') {
-        props.history.push(`/groupchat`);
+        props.history.push(`/`);
       } else {
-        const isUserLoggedInResponse = await userSessionCheckHTTPRequest(
-          userDetails.userID
-        );
-        if (!isUserLoggedInResponse.response) {
-          props.history.push(`/`);
+        const webSocketConnection = connectToWebSocket(userDetails.userID);
+        if (webSocketConnection.webSocketConnection === null) {
+          setInternalError(webSocketConnection.message);
         } else {
-          const webSocketConnection = connectToWebSocket(userDetails.userID);
-          if (webSocketConnection.webSocketConnection === null) {
-            setInternalError(webSocketConnection.message);
-          } else {
-            listenToWebSocketEvents()
-          }
+          listenToWebSocketEvents()
         }
       }
     })();
@@ -71,12 +64,17 @@ const logoutUser = (props, userDetails) => {
   }
 };
 
+const backtoHome = (props) => {
+  props.history.push(`/mainhome`);
+};
 
+const reloadchatlist = (userDetails) => {
+  console.log("reload");
+};
 
 function Groupchat(props) {
   const [userDetails, internalError] = useFetch(props);
-  const [selectedUser, updateSelectedUser] = useState(null);
-
+  const roomNumber = getItemInLS("chatRoomNo")
   if (internalError !== null) {
     return <h1>{internalError}</h1>;
   }
@@ -92,6 +90,16 @@ function Groupchat(props) {
             <h4>{getUserName(userDetails)}</h4>
           </div>
         </nav>
+        <button className='reloadchatlist' href='#' onClick={ () => {
+          reloadchatlist(userDetails);
+        }} >
+          Reload
+        </button>
+        <button className='mainhome' href='#' onClick={ () => {
+          backtoHome(props);
+        }} >
+          Home
+        </button>
         <button className='logout' href='#' onClick={ () => {
           logoutUser(props, userDetails);
         }} >
@@ -100,15 +108,10 @@ function Groupchat(props) {
       </header>
       <div className='app__content-container'>
         <div className='app__groupchat-chatlist'>
-          <ChatList
-            updateSelectedUser={(user) => {
-              updateSelectedUser(user);
-            }}
-            userDetails={userDetails}
-          />
+          <label className='label-style'>RoomNumber: {roomNumber}</label>
         </div>
         <div className='app__groupchat-message'>
-          <Conversation userDetails={userDetails} selectedUser={selectedUser} />
+          <RoomConversation userDetails={userDetails} roomNumber={roomNumber} />
         </div>
       </div>
     </div>

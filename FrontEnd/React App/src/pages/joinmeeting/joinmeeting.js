@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Link, withRouter } from 'react-router-dom';
-import {getItemInLS} from "./../../services/storage-service";
+import {  getItemInLS, removeItemInLS, setItemInLS} from "./../../services/storage-service";
 import { userJoinRoom } from "./../../services/api-service";
 
 
@@ -80,6 +80,8 @@ function JoinMeeting(props) {
         // props.displayPageLoader(false);
     
         if (joinResponse.code===200){
+            setItemInLS('chatRoomNo', roomNumber)
+            setTimeout(() => {props.history.push(`/groupchat`); }, 3000);
             console.log(joinResponse.response)
             Store.addNotification({
               title: "Join Room Success!",
@@ -90,7 +92,7 @@ function JoinMeeting(props) {
               animationIn: ["animate__animated", "animate__fadeIn"],
               animationOut: ["animate__animated", "animate__fadeOut"],
               dismiss: {
-                duration: 5000,
+                duration: 3000,
                 onScreen: true
               }
             });

@@ -132,7 +132,7 @@ function Navhome(props) {
         (async () => {
           if (userDetails === null || userDetails === '') {
             console.log("user not log in");
-            mainhomeprops.history.push(`/authentication`);
+            mainhomeprops.history.push(`/`);
           }
         })();
     
