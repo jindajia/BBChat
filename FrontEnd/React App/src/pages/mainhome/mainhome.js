@@ -241,4 +241,4 @@ function Mainhome(props) {
 
 }
 
-export default Mainhome;
+export default withRouter(Mainhome);
