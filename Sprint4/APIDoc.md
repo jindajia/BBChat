@@ -18,7 +18,7 @@ Normal case.
 ```
 ##### Response:
 ```
-    {
+{
       "code": 200,
       "status": "OK",
       "message": "User Registration Completed.",
@@ -33,14 +33,14 @@ Normal case.
 wrong case without password input:
 ##### Body
 ```
-    {
+{
     "Username": "ioih",
     "Password": ""
 }
 ```
 ##### Response:
 ```
-    {
+{
     "code": 500,
     "status": "Internal Server Error",
     "message": "Password can't be empty.",
@@ -263,15 +263,24 @@ Normal Case
 ##### Body
 ```
 {
-    "Username": "kkkkk",
-	  "UserID": "6247348aa456b8b53a5fce90",
-    "RoomName": "29",
-    "GenerateRoomPassword":"Yes"
+     "Username": "Cauchy",
+     "UserID": "6260504c1190410dbe5babac",
+     "RoomName": "2889",
+     "GenerateRoomPassword":"Yes"
 }
 ```
 ##### Response:
 ```
-
+{
+    "code": 200,
+    "status": "OK",
+    "message": "You have created a chat room",
+    "response": {
+        "roomNo": "26931255",
+        "roomPassword": "I3a4tR(2#.",
+        "roomName": "2889"
+    }
+}
 ```
 *Example 2:*</br>
 Error Case
@@ -290,28 +299,61 @@ POST    http://localhost:8000/JoinRoom
 ```
 #### Examples:
 *Example 1:*</br>
-Normal Case
+Error Case =>
 ##### Body
 ```
 {
-     "Username": "Cauchy",
-     "RoomNo": "29",
-     "RoomPassword":"$@%ky,ub+B" 
+     "Username": "Kexin Zhang",
+     "RoomNo": "26931255",
+     "RoomPassword":"I3a4tR(2#."
 }
 ```
 ##### Response:
 ```
-
+{
+    "code": 200,
+    "status": "OK",
+    "message": "user joint the group chat",
+    "response": "user joint the group chat"
+}
 ```
 *Example 2:*</br>
-Error Case =>
+wrong password Case
 ##### Body
 ```
-
+{
+    "Username": "Kexin Zhang",
+    "RoomNo": "26931255",
+    "RoomPassword":"I3a4tR(2#"
+}
 ```
 ##### Response:
 ```
-
+{
+    "code": 400,
+    "status": "Bad Request",
+    "message": "Kexin Zhang cannot join the group chat room",
+    "response": "Password isn't correct"
+}
+```
+*Example 3:*</br>
+unlegal user case:
+##### Body
+```
+{
+     "Username": "Kexin Zhang",
+     "RoomNo": "",
+     "RoomPassword":"I3a4tR(2#."
+}
+```
+##### Response:
+```
+{
+    "code": 400,
+    "status": "Bad Request",
+    "message": "RoomNo can't be empty.",
+    "response": null
+}
 ```
 
 
@@ -330,7 +372,7 @@ http://localhost:8000/getRoomChatConversation/29439400/f625f06024b1ed70f00d2a48e
 ```
 {
     "Username": "kkkkk",
-	  "UserID": "6247348aa456b8b53a5fce90",
+    "UserID": "6247348aa456b8b53a5fce90",
     "RoomName": "29",
     "GenerateRoomPassword":"Yes"
 }
@@ -350,3 +392,80 @@ Error Case
 
 ```
 
+### 8. Send BroadCasting  Message API
+```
+POST  getBroadcast/{fromUserID}
+```
+#### Examples:</br>
+
+*Example 1:*</br>
+Normal Case with fromUserID as 6247348aa456b8b53a5fce90 </br>
+```
+http://localhost:8000/getBroadcast/f625f06024b1ed70f00d2a48e
+```
+##### Body
+```
+{
+    "fromUserID": "6247348aa456b8b53a5fce90",
+    "Message":"This is a broadcast Test"
+}
+```
+##### Response:
+```
+{
+    "code": 200,
+    "status": "OK",
+    "message": "Username is available.",
+    "response": null
+}
+```
+
+### 9. Send DriftBottle  Message API
+```
+POST  getDriftBottle/{toUserID}/{fromUserID}
+```
+#### Examples:</br>
+
+*Example 1:*</br>
+##### Body
+```
+{
+    "fromUserID": "6247348aa456b8b53a5fce90",
+    "toUserID": "f625f06024b1ed70f00d2a48e",
+    "Message":"This is a DriftBottle Test"
+}
+```
+##### Response:
+```
+{
+    "code": 200,
+    "status": "OK",
+    "message": "Username is available.",
+    "response": null
+}
+```
+### 9. Add Friend API
+```
+websocket request  getDriftBottle/{fromUserID}
+```
+#### Examples:</br>
+
+*Example 1:*</br>
+```
+ws://localhost:8000/ws/6260504c1190410dbe5babac
+```
+##### Body
+```
+{
+    "eventName": "add_friends",
+    "eventPayload": {
+        "fromUserID": "6260504c1190410dbe5babac",
+        "toUserID": "626050421190410dbe5baba",
+        "message": "I love uuuuuuu",
+    }
+}
+```
+##### Response:
+```
+
+```
