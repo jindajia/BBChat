@@ -446,7 +446,7 @@ POST  getDriftBottle/{toUserID}/{fromUserID}
 ```
 ### 9. Add Friend API
 ```
-websocket request  getDriftBottle/{fromUserID}
+websocket request  ws://localhost:8000/ws/{userID}
 ```
 #### Examples:</br>
 
@@ -465,7 +465,131 @@ ws://localhost:8000/ws/6260504c1190410dbe5babac
     }
 }
 ```
-##### Response:
+##### Response:</br>
+friend side:
+
+```
+{
+    "eventName": "frinedslist-response",
+    "eventPayload": {
+        "fromUserID": "6260504c1190410dbe5babac",
+        "toUserID": "626050421190410dbe5babaa",
+        "message": "Cauchy wants to add Cauchy Zhang as a friend",
+        "image": ""
+    }
+}
+```
+user-side:
+```
+{
+    "eventName": "frinedslist-response",
+    "eventPayload": {
+        "fromUserID": "626050421190410dbe5babaa",
+        "toUserID": "6260504c1190410dbe5babac",
+        "message": "You have been friends with Cauchy",
+        "image": ""
+    }
+}
 ```
 
+### get group Chat history API
+```
+websocket request  ws://localhost:8000/ws/{userID}
+```
+#### Examples:</br>
+
+*Example 1:*</br>
+new user joined
+```
+ws://localhost:8000/ws/6260504c1190410dbe5babac
+```
+##### Body
+```
+{
+    "eventName": "new-user-joined",
+    "eventPayload": {
+        "fromUserID": "6260504c1190410dbe5babac",
+        "toUserID": "626050421190410dbe5baba",
+        "message": "I love uuuuuuu",
+    }
+}
+```
+##### Response:</br>
+
+```
+{
+    "eventName": "chatlist-response",
+    "eventPayload": {
+        "type": "new-user-joined",
+        "chatlist": {
+            "username": "Cauchy",
+            "userID": "6260504c1190410dbe5babac",
+            "online": "Y"
+        }
+    }
+}
+```
+*Example 2:*</br>
+user disconnect
+##### Response :</br>
+```
+{
+    "eventName": "chatlist-response",
+    "eventPayload": {
+        "type": "user-disconnected",
+        "chatlist": {
+            "username": "Cauchy",
+            "userID": "6260504c1190410dbe5babac",
+            "online": "N"
+        }
+    }
+}
+```
+*Example 3:*</br>
+my-chat-list
+##### Response :</br>
+```
+{
+    "eventName": "chatlist-response",
+    "eventPayload": {
+        "type": "my-chat-list",
+        "chatlist": [
+            {
+                "username": "Kiy123",
+                "userID": "625f5dfc87dbe1be871557f0",
+                "online": "Y"
+            },
+            {
+                "username": "Kitty123",
+                "userID": "625f6119276fadd8352c5e1d",
+                "online": "Y"
+            },
+            {
+                "username": "Kitty123",
+                "userID": "625f61db09cce2204b13786d",
+                "online": "Y"
+            },
+            {
+                "username": "Nick",
+                "userID": "62604231708c25d855218974",
+                "online": "Y"
+            },
+            {
+                "username": "Cauchy",
+                "userID": "6260504c1190410dbe5babac",
+                "online": "Y"
+            },
+            {
+                "username": "Kity123",
+                "userID": "62608d1b24fc98f890f2cab0",
+                "online": "Y"
+            },
+            {
+                "username": "Kity123",
+                "userID": "62609f46ce19074375bc2791",
+                "online": "Y"
+            }
+        ]
+    }
+}
 ```
